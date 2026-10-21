@@ -302,7 +302,8 @@ function refreshItem(item)
         if ignoreCapacity:isChecked() then
             capacityMaxCount = 65535
         end
-        local priceMaxCount = math.floor(playerMoney / getItemPrice(item, true))
+        local itemPrice = getItemPrice(item, true)
+        local priceMaxCount = itemPrice > 0 and math.floor(playerMoney / itemPrice) or 65535
         local finalCount = math.max(0, math.min(getMaxAmount(), math.min(priceMaxCount, capacityMaxCount)))
         quantityScroll:setMinimum(1)
         quantityScroll:setMaximum(finalCount)
@@ -406,7 +407,8 @@ function onOpenNpcTrade(items)
     tradeItems[SELL] = {}
 
     for key, item in pairs(items) do
-        if item[4] > 0 then
+        -- Mubia: precio de compra y venta 0 = item gratis del NPC
+        if item[4] > 0 or item[5] == 0 then
             local newItem = {}
             newItem.ptr = item[1]
             newItem.name = item[2]
