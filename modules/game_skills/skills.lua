@@ -162,13 +162,30 @@ local SKILL_GROUPS = {
     }
 }
 
+-- Mubia: los skills de Tibia no se usan, el daño sale de STR/AGI/VIT/ENE
+local MUBIA_HIDDEN = { magiclevel = true, offlineTraining = true, soul = true }
+for i = 0, 16 do
+    MUBIA_HIDDEN['skillId' .. i] = true
+end
+
+local function hideMubiaSkills()
+    for skillId in pairs(MUBIA_HIDDEN) do
+        local skill = skillsWindow:recursiveGetChildById(skillId)
+        if skill then
+            skill:setVisible(false)
+        end
+    end
+end
+
 local function setSkillGroupVisibility(groupName, visible)
     local skills = SKILL_GROUPS[groupName]
     if not skills then return end
 
     for _, skillId in pairs(skills) do
         local skill = skillsWindow:recursiveGetChildById(skillId)
-        if skill then
+        if skill and MUBIA_HIDDEN[skillId] then
+            skill:setVisible(false)
+        elseif skill then
             if visible then
                 local valueWidget = skill:getChildById('value')
                 local text = valueWidget and valueWidget:getText() or ""
@@ -808,6 +825,7 @@ function skillController:onGameStart()
         loadSkillsVisibilitySettings() 
     end, 100)
     hideOldClientStats()
+    hideMubiaSkills()
     updateHeight()
 end
 
@@ -839,6 +857,7 @@ function refresh()
         onSkillChange(player, i, player:getSkillLevel(i), player:getSkillLevelPercent(i))
     end
     update()
+    hideMubiaSkills()
     updateHeight()
     if g_game.getClientVersion() >= 1410 then
         onFlatDamageHealingChange(player, statsCache.flatDamageHealing)

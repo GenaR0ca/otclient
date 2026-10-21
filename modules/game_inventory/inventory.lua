@@ -103,6 +103,11 @@ local function combatEvent()
         selectPosture('stand', true)
     end
     
+    -- Mubia: no hay posturas de combate, siempre se juega en modo equilibrado
+    if g_game.getFightMode() ~= FightBalanced then
+        g_game.setFightMode(FightBalanced)
+    end
+
     if g_game.getFightMode() == FightOffensive then
         selectCombat('attack', true)
     elseif g_game.getFightMode() == FightBalanced then
