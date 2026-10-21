@@ -73,11 +73,12 @@ if ENABLE_SERVERS then
         -- @field httpLogin Enables HTTP-based login on the server
         -- @field useAuthenticator Enables additional authentication layer
         --
-        -- Mubia Online: servidor local (Canary en este mismo PC)
-        ["127.0.0.1"] = {
-            port = 7171,
+        -- Mubia Online: servidor local (Canary + login-server en este mismo PC)
+        ["http://127.0.0.1/login"] = {
+            port = 8088,
             protocol = 1525,
-            httpLogin = false
+            httpLogin = true,
+            useAuthenticator = false
         }
     }
 end
