@@ -30,7 +30,8 @@ function controllerNpcTrader:onOpenNpcTrade(items, currencyId, currencyName)
             local weight = itemData[3] / 100
             local buyPrice = itemData[4]
             local sellPrice = itemData[5]
-            if buyPrice > 0 then
+            -- Mubia: precio de compra y venta 0 = item gratis del NPC
+            if buyPrice > 0 or sellPrice == 0 then
                 table.insert(controllerNpcTrader.buyItems, {
                     ptr = ptr,
                     name = name,
@@ -267,7 +268,10 @@ function controllerNpcTrader:updateAmount(amount)
         local minAmount = controllerNpcTrader.MIN_AMOUNT
         if self.tradeMode == controllerNpcTrader.BUY then
             local playerMoney = self:getPlayerMoney()
-            local maxByMoney = math.floor(playerMoney / self.selectedItem.price)
+            local maxByMoney = controllerNpcTrader.MAX_AMOUNT_NORMAL
+            if self.selectedItem.price > 0 then
+                maxByMoney = math.floor(playerMoney / self.selectedItem.price)
+            end
             local maxByCapacity = controllerNpcTrader.MAX_AMOUNT_NORMAL
             if not self.ignoreCapacity then
                 local player = g_game.getLocalPlayer()
