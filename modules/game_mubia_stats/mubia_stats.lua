@@ -32,8 +32,14 @@ local function update(data)
         row:getChildById('add1'):setEnabled(hasPoints)
         row:getChildById('add10'):setEnabled((data.points or 0) >= 10)
     end
-    window:getChildById('damageLabel'):setText(string.format('Da\241o: %d - %d', data.minDamage or 0, data.maxDamage or 0))
+    window:getChildById('damageLabel'):setText(string.format('Da\241o f\237sico: %d - %d', data.minDamage or 0, data.maxDamage or 0))
+    if (data.maxMagic or 0) > 0 then
+        window:getChildById('magicLabel'):setText(string.format('Da\241o m\225gico: %d - %d', data.minMagic or 0, data.maxMagic or 0))
+    else
+        window:getChildById('magicLabel'):setText('Da\241o m\225gico: -')
+    end
     window:getChildById('defenseLabel'):setText(string.format('Defensa: %d', data.defense or 0))
+    window:getChildById('speedLabel'):setText(string.format('Vel. ataque: %.2fs   Vel. magia: %.2fs', (data.attackSpeed or 0) / 1000, (data.castSpeed or 0) / 1000))
     window:getChildById('lifeLabel'):setText(string.format('Vida: %d   Mana: %d', data.maxHealth or 0, data.maxMana or 0))
 end
 

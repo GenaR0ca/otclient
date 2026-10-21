@@ -43,7 +43,7 @@ StatRow < Panel
 
 MainWindow
   id: mubiaStatsWindow
-  size: 240 300
+  size: 240 350
   !text: tr('Personaje')
   @onEscape: modules.game_mubia_stats.toggle()
 
@@ -79,7 +79,13 @@ MainWindow
     margin-top: 10
 
   StatLabel
+    id: magicLabel
+
+  StatLabel
     id: defenseLabel
+
+  StatLabel
+    id: speedLabel
 
   StatLabel
     id: lifeLabel

@@ -186,6 +186,7 @@ PhantomMiniWindow
 
     TopToggleButton
       id: attack
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 40 20 20
       anchors.right: standPosture.left
@@ -203,6 +204,7 @@ PhantomMiniWindow
 
     TopToggleButton
       id: balanced
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 80 20 20
       anchors.right: attack.right
@@ -220,6 +222,7 @@ PhantomMiniWindow
 
     TopToggleButton
       id: defense
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 60 20 20
       anchors.right: attack.right
@@ -462,6 +465,7 @@ PhantomMiniWindow
 
     TopToggleButton
       id: attack
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 40 20 20
       anchors.left: soulAndCapacity.right
@@ -479,6 +483,7 @@ PhantomMiniWindow
 
     TopToggleButton
       id: defense
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 60 20 20
       anchors.left: attack.right
@@ -496,6 +501,7 @@ PhantomMiniWindow
 
     TopToggleButton
       id: balanced
+      visible: false
       image-source: /images/inventory/buttons_general
       image-clip: 0 80 20 20
       anchors.left: defense.right
