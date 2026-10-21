@@ -32,7 +32,7 @@ local function update(data)
         row:getChildById('add1'):setEnabled(hasPoints)
         row:getChildById('add10'):setEnabled((data.points or 0) >= 10)
     end
-    window:getChildById('damageLabel'):setText(string.format('Daño: %d - %d', data.minDamage or 0, data.maxDamage or 0))
+    window:getChildById('damageLabel'):setText(string.format('Da\241o: %d - %d', data.minDamage or 0, data.maxDamage or 0))
     window:getChildById('defenseLabel'):setText(string.format('Defensa: %d', data.defense or 0))
     window:getChildById('lifeLabel'):setText(string.format('Vida: %d   Mana: %d', data.maxHealth or 0, data.maxMana or 0))
 end
