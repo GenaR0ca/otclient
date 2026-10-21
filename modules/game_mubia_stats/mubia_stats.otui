@@ -1,0 +1,93 @@
+StatLabel < Label
+  height: 18
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.top: prev.bottom
+  margin-top: 4
+  text-align: left
+
+StatRow < Panel
+  height: 22
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.top: prev.bottom
+  margin-top: 4
+
+  Label
+    id: name
+    width: 70
+    anchors.left: parent.left
+    anchors.verticalCenter: parent.verticalCenter
+
+  Label
+    id: value
+    width: 50
+    anchors.left: prev.right
+    anchors.verticalCenter: parent.verticalCenter
+    text-align: right
+
+  Button
+    id: add10
+    !text: '+10'
+    width: 34
+    anchors.right: parent.right
+    anchors.verticalCenter: parent.verticalCenter
+
+  Button
+    id: add1
+    !text: '+1'
+    width: 28
+    anchors.right: prev.left
+    anchors.verticalCenter: parent.verticalCenter
+    margin-right: 4
+
+MainWindow
+  id: mubiaStatsWindow
+  size: 240 300
+  !text: tr('Personaje')
+  @onEscape: modules.game_mubia_stats.toggle()
+
+  Label
+    id: classLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    text-align: center
+    color: #f0c040
+
+  StatLabel
+    id: levelLabel
+
+  StatLabel
+    id: pointsLabel
+    color: #80ff80
+
+  StatRow
+    id: strRow
+
+  StatRow
+    id: agiRow
+
+  StatRow
+    id: vitRow
+
+  StatRow
+    id: eneRow
+
+  StatLabel
+    id: damageLabel
+    margin-top: 10
+
+  StatLabel
+    id: defenseLabel
+
+  StatLabel
+    id: lifeLabel
+
+  Button
+    id: closeButton
+    !text: tr('Cerrar')
+    width: 60
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_stats.toggle()

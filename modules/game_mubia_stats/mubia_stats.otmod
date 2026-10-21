@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_stats
+  description: Mubia Online - ventana de stats estilo MU (STR, AGI, VIT, ENE)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_stats ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface
