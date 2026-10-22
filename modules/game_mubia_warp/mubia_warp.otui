@@ -1,0 +1,36 @@
+WarpButton < Button
+  height: 24
+
+MainWindow
+  id: mubiaWarpWindow
+  size: 240 120
+  !text: tr('Mapa')
+  @onEscape: modules.game_mubia_warp.toggle()
+
+  Label
+    id: titleLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    text-align: center
+    color: #f0c040
+
+  Panel
+    id: destinations
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    anchors.bottom: closeButton.top
+    margin-top: 8
+    margin-bottom: 8
+    layout:
+      type: verticalBox
+      spacing: 4
+
+  Button
+    id: closeButton
+    !text: tr('Cerrar')
+    width: 70
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_warp.toggle()

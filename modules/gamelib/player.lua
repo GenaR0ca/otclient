@@ -594,6 +594,8 @@ InventorySlotFeet = 8
 InventorySlotFinger = 9
 InventorySlotAmmo = 10
 InventorySlotPurse = 11
+InventorySlotWings = 12 -- Mubia: alas de MU
+InventorySlotGloves = 13 -- Mubia: guantes de MU
 
 InventorySlotFirst = 1
 InventorySlotLast = 10

@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_warp
+  description: Mubia Online - menu de ciudades para viajar (tecla M de MU)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_warp ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface

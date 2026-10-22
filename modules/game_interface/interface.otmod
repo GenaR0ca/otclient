@@ -59,6 +59,7 @@ Module
     - game_taskboard
     - game_wheel
     - game_mubia_stats
+    - game_mubia_warp
     - game_proficiency
 
   @onLoad: init()

@@ -171,6 +171,34 @@ MainInventoryItem < UIWidget
       opacity: 1
 
   UIWidget
+    id: wings
+    image-source: /images/inventory/inventory_wings
+    anchors.centerIn: parent
+    phantom: true
+    enabled: false
+    size: 32 32
+
+    $disabled:
+      opacity: 0
+
+    $!disabled:
+      opacity: 1
+
+  UIWidget
+    id: gloves
+    image-source: /images/inventory/inventory_gloves
+    anchors.centerIn: parent
+    phantom: true
+    enabled: false
+    size: 32 32
+
+    $disabled:
+      opacity: 0
+
+    $!disabled:
+      opacity: 1
+
+  UIWidget
     id: golden
     image-source: /images/inventory/containerslot_goldenborder
     image-border: 3
