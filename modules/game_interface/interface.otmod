@@ -60,6 +60,7 @@ Module
     - game_wheel
     - game_mubia_stats
     - game_mubia_warp
+    - game_mubia_inventario
     - game_proficiency
 
   @onLoad: init()

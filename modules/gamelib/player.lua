@@ -596,6 +596,7 @@ InventorySlotAmmo = 10
 InventorySlotPurse = 11
 InventorySlotWings = 12 -- Mubia: alas de MU
 InventorySlotGloves = 13 -- Mubia: guantes de MU
+InventorySlotPet = 14 -- Mubia: mascotas de MU (Imp, Guardian Angel, Fenrir...)
 
 InventorySlotFirst = 1
 InventorySlotLast = 10

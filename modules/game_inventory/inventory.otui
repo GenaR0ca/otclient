@@ -260,7 +260,7 @@ PhantomMiniWindow
       image-source: /images/ui/containerslot
       image-border: 3
       anchors.left: capacityPanel.right
-      anchors.right: backpack.right
+      anchors.right: wings.right
       margin-left: 3
       anchors.bottom: parent.bottom
       anchors.top: stop.top
@@ -284,16 +284,26 @@ PhantomMiniWindow
 
     MainInventoryItem
       id: wings
-      anchors.top: gloves.top
-      anchors.left: legs.right
+      anchors.top: amulet.top
+      anchors.left: helmet.right
       margin-left: 3
       &slotPosition: {x = 65535, y = 12, z = 0}
 
+    // Mubia: mascotas (Imp, Guardian Angel, Fenrir...) donde antes estaban las alas
+    MainInventoryItem
+      id: pet
+      anchors.top: gloves.top
+      anchors.left: legs.right
+      margin-left: 3
+      &slotPosition: {x = 65535, y = 14, z = 0}
+
+    // Mubia: la mochila no se muestra; el inventario de 40 lugares se abre con la tecla I
     MainInventoryItem
       id: backpack
       anchors.top: amulet.top
       anchors.left: helmet.right
       margin-left: 3
+      visible: false
       &slotPosition: {x = 65535, y = 3, z = 0}
 
     MainInventoryItem
