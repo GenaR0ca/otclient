@@ -25,7 +25,8 @@ local getSlotPanelBySlot = {
     [InventorySlotFinger] = function(ui) return ui.ring, ui.ring.ring end,
     -- Mubia: el slot de munición es el segundo anillo
     [InventorySlotAmmo] = function(ui) return ui.tools, ui.tools.ring end,
-    [InventorySlotWings] = function(ui) return ui.wings, ui.wings.wings end
+    [InventorySlotWings] = function(ui) return ui.wings, ui.wings.wings end,
+    [InventorySlotGloves] = function(ui) return ui.gloves, ui.gloves.gloves end
 }
 
 local function isPlayerMonk()
@@ -223,7 +224,7 @@ local function refreshInventory_panel()
         return
     end
 
-    for i = InventorySlotFirst, InventorySlotWings do
+    for i = InventorySlotFirst, InventorySlotGloves do
         if g_game.isOnline() then
             inventoryEvent(player, i, player:getInventoryItem(i))
         else
