@@ -284,17 +284,16 @@ PhantomMiniWindow
 
     MainInventoryItem
       id: wings
-      anchors.top: amulet.top
-      anchors.left: helmet.right
+      anchors.top: gloves.top
+      anchors.left: legs.right
       margin-left: 3
       &slotPosition: {x = 65535, y = 12, z = 0}
 
     MainInventoryItem
       id: backpack
-      anchors.top: wings.bottom
+      anchors.top: amulet.top
       anchors.left: helmet.right
       margin-left: 3
-      margin-top: 3
       &slotPosition: {x = 65535, y = 3, z = 0}
 
     MainInventoryItem
@@ -306,49 +305,49 @@ PhantomMiniWindow
 
     MainInventoryItem
       id: ring
-      anchors.top: sword.bottom
+      anchors.top: gloves.bottom
       anchors.left: amulet.left
       margin-top: 3
       &slotPosition: {x = 65535, y = 9, z = 0}
 
     MainInventoryItem
       id: armor
-      anchors.top: helmet.bottom
-      anchors.left: helmet.left
-      margin-top: 3
+      anchors.top: sword.top
+      anchors.left: sword.right
+      margin-left: 3
       &slotPosition: {x = 65535, y = 4, z = 0}
 
     MainInventoryItem
       id: legs
-      anchors.top: armor.bottom
-      anchors.left: helmet.left
-      margin-top: 3
+      anchors.top: gloves.top
+      anchors.left: gloves.right
+      margin-left: 3
       &slotPosition: {x = 65535, y = 7, z = 0}
 
     MainInventoryItem
       id: boots
-      anchors.top: legs.bottom
-      anchors.left: helmet.left
-      margin-top: 3
+      anchors.top: ring.top
+      anchors.left: ring.right
+      margin-left: 3
       &slotPosition: {x = 65535, y = 8, z = 0}
 
     MainInventoryItem
       id: shield
-      anchors.top: backpack.bottom
-      anchors.left: backpack.left
-      margin-top: 3
+      anchors.top: sword.top
+      anchors.left: armor.right
+      margin-left: 3
       &slotPosition: {x = 65535, y = 5, z = 0}
 
     MainInventoryItem
       id: tools
-      anchors.top: shield.bottom
-      anchors.left: backpack.left
-      margin-top: 3
+      anchors.top: ring.top
+      anchors.left: boots.right
+      margin-left: 3
       &slotPosition: {x = 65535, y = 10, z = 0}
 
     MainInventoryItem
       id: gloves
-      anchors.top: ring.bottom
+      anchors.top: sword.bottom
       anchors.left: amulet.left
       margin-top: 3
       &slotPosition: {x = 65535, y = 13, z = 0}
