@@ -280,10 +280,18 @@ PhantomMiniWindow
       &slotPosition: {x = 65535, y = 1, z = 0}
 
     MainInventoryItem
-      id: backpack
-      anchors.top: amulet.top
+      id: wings
+      anchors.top: changeSize.top
       anchors.left: helmet.right
       margin-left: 3
+      &slotPosition: {x = 65535, y = 12, z = 0}
+
+    MainInventoryItem
+      id: backpack
+      anchors.top: wings.bottom
+      anchors.left: helmet.right
+      margin-left: 3
+      margin-top: 3
       &slotPosition: {x = 65535, y = 3, z = 0}
 
     MainInventoryItem
@@ -335,22 +343,15 @@ PhantomMiniWindow
       margin-top: 3
       &slotPosition: {x = 65535, y = 10, z = 0}
 
-    MainInventoryItem
-      id: wings
-      anchors.top: ring.bottom
-      anchors.left: amulet.left
-      margin-top: 3
-      &slotPosition: {x = 65535, y = 12, z = 0}
-
     UIWidget
       id: capacityPanel
       image-source: /images/inventory/containerslot
       image-border: 3
       phantom: false
-      anchors.left: backpack.left
-      anchors.right: backpack.right
+      anchors.left: amulet.left
+      anchors.right: amulet.right
       anchors.bottom: boots.bottom
-      anchors.top: tools.bottom
+      anchors.top: ring.bottom
       margin-top: 3
 
       Label

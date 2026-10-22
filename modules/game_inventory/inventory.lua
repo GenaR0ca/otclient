@@ -23,7 +23,8 @@ local getSlotPanelBySlot = {
     [InventorySlotLeg] = function(ui) return ui.legs, ui.legs.legs end,
     [InventorySlotFeet] = function(ui) return ui.boots, ui.boots.boots end,
     [InventorySlotFinger] = function(ui) return ui.ring, ui.ring.ring end,
-    [InventorySlotAmmo] = function(ui) return ui.tools, ui.tools.tools end,
+    -- Mubia: el slot de munición es el segundo anillo
+    [InventorySlotAmmo] = function(ui) return ui.tools, ui.tools.ring end,
     [InventorySlotWings] = function(ui) return ui.wings, ui.wings.wings end
 }
 
@@ -352,7 +353,8 @@ function inventoryController:onGameStart()
             end
         end
     end
-    inventoryController.ui.onPanel.purseButton:setVisible(g_game.getFeature(GamePurseSlot))
+    -- Mubia: sin botón de purse (tienda de Tibia); en su lugar está el slot de alas
+    inventoryController.ui.onPanel.purseButton:setVisible(false)
 
     if isPlayerMonk() and player then
         local leftItem = player:getInventoryItem(InventorySlotLeft)
