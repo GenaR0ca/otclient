@@ -23,7 +23,8 @@ local getSlotPanelBySlot = {
     [InventorySlotLeg] = function(ui) return ui.legs, ui.legs.legs end,
     [InventorySlotFeet] = function(ui) return ui.boots, ui.boots.boots end,
     [InventorySlotFinger] = function(ui) return ui.ring, ui.ring.ring end,
-    [InventorySlotAmmo] = function(ui) return ui.tools, ui.tools.tools end
+    [InventorySlotAmmo] = function(ui) return ui.tools, ui.tools.tools end,
+    [InventorySlotWings] = function(ui) return ui.wings, ui.wings.wings end
 }
 
 local function isPlayerMonk()
@@ -221,7 +222,7 @@ local function refreshInventory_panel()
         return
     end
 
-    for i = InventorySlotFirst, InventorySlotPurse do
+    for i = InventorySlotFirst, InventorySlotWings do
         if g_game.isOnline() then
             inventoryEvent(player, i, player:getInventoryItem(i))
         else
