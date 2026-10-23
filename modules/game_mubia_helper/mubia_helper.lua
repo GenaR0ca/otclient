@@ -526,7 +526,8 @@ local function onHelper(protocol, opcode, data)
         end
     end
     if data.cost and window then
-        window:getChildById('costLabel'):setText(string.format('Prenderlo cuesta %d zen (nivel x 20).', data.cost))
+        local text = data.cost > 0 and string.format('Prenderlo cuesta %d zen.', data.cost) or 'Por ahora es gratis (modo prueba).'
+        window:getChildById('costLabel'):setText(text)
     end
     if data.on ~= nil then
         setHelperOn(data.on == true)
