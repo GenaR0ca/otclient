@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_tienda
+  description: Mubia Online - tienda de NPC estilo MU (grilla de items, click derecho en el NPC la abre)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_tienda ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface

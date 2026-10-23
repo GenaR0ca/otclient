@@ -15,7 +15,7 @@ local function healthManaEvent()
 end
 
 -- Mubia: barras de SD y AG (el servidor las manda por el opcode 83)
-local SDAG_OPCODE = 83
+local SDAG_OPCODE = 84 -- el 83 es de la Chaos Machine
 
 local function setBar(row, value, maxValue)
     row.text:setText(value)
