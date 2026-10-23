@@ -58,6 +58,7 @@ Module
     - game_mubia_warp
     - game_mubia_inventario
     - game_mubia_tienda
+    - game_mubia_helper
 
   @onLoad: init()
   @onUnload: terminate()

@@ -1,0 +1,241 @@
+HelperSection < Label
+  color: #f0c040
+  anchors.left: parent.left
+  anchors.right: parent.right
+  anchors.top: prev.bottom
+  margin-top: 12
+
+HelperLabel < Label
+  anchors.left: parent.left
+  anchors.top: prev.bottom
+  margin-top: 9
+  width: 96
+  text-auto-resize: false
+
+HelperSkill < ComboBox
+  anchors.left: prev.right
+  anchors.verticalCenter: prev.verticalCenter
+  width: 130
+  menu-scroll: true
+  menu-height: 200
+
+HelperMode < ComboBox
+  anchors.left: prev.right
+  anchors.verticalCenter: prev.verticalCenter
+  margin-left: 4
+  width: 100
+
+HelperNumber < SpinBox
+  anchors.left: prev.right
+  anchors.verticalCenter: prev.verticalCenter
+  margin-left: 4
+  width: 44
+  height: 20
+  buttons: true
+  mouse-scroll: true
+
+HelperCheck < CheckBox
+  anchors.left: parent.left
+  anchors.top: prev.bottom
+  margin-top: 6
+  width: 300
+
+MainWindow
+  id: mubiaHelperWindow
+  size: 360 560
+  !text: tr('MU Helper')
+  @onEscape: modules.game_mubia_helper.toggleWindow()
+
+  Label
+    id: statusLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    text-align: center
+    color: #ff6060
+
+  Label
+    id: costLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 2
+    text-align: center
+    color: #c0c0c0
+
+  HelperSection
+    id: huntSection
+
+  HelperLabel
+    id: rangeLabel
+
+  HelperNumber
+    id: huntRange
+    margin-left: 0
+    minimum: 1
+    maximum: 8
+
+  HelperCheck
+    id: chase
+
+  HelperCheck
+    id: returnHome
+
+  HelperSection
+    id: skillSection
+
+  HelperLabel
+    id: basicLabel
+
+  HelperSkill
+    id: basicSkill
+
+  HelperLabel
+    id: skill1Label
+    anchors.top: basicLabel.bottom
+
+  HelperSkill
+    id: skill1
+
+  HelperMode
+    id: skill1Mode
+
+  HelperNumber
+    id: skill1Value
+    minimum: 1
+    maximum: 60
+
+  HelperLabel
+    id: skill2Label
+    anchors.top: skill1Label.bottom
+
+  HelperSkill
+    id: skill2
+
+  HelperMode
+    id: skill2Mode
+
+  HelperNumber
+    id: skill2Value
+    minimum: 1
+    maximum: 60
+
+  HelperLabel
+    id: buffLabel
+    anchors.top: skill2Label.bottom
+
+  HelperSkill
+    id: buff1
+    width: 76
+
+  HelperSkill
+    id: buff2
+    width: 76
+    margin-left: 4
+
+  HelperSkill
+    id: buff3
+    width: 76
+    margin-left: 4
+
+  HelperSection
+    id: healSection
+    anchors.top: buffLabel.bottom
+
+  HelperLabel
+    id: hpLabel
+    width: 150
+
+  HelperNumber
+    id: hpPotion
+    minimum: 0
+    maximum: 100
+
+  HelperLabel
+    id: mpLabel
+    anchors.top: hpLabel.bottom
+    width: 150
+
+  HelperNumber
+    id: mpPotion
+    minimum: 0
+    maximum: 100
+
+  HelperLabel
+    id: healLabel
+    anchors.top: mpLabel.bottom
+    width: 150
+
+  HelperNumber
+    id: healPercent
+    minimum: 0
+    maximum: 100
+
+  HelperSection
+    id: pickSection
+    anchors.top: healLabel.bottom
+
+  HelperCheck
+    id: pickAll
+
+  HelperCheck
+    id: pickJewels
+
+  HelperCheck
+    id: pickExcellent
+
+  HelperCheck
+    id: pickGear
+
+  HelperLabel
+    id: pickRangeLabel
+    width: 150
+
+  HelperNumber
+    id: pickRange
+    minimum: 1
+    maximum: 8
+
+  HelperLabel
+    id: extraLabel
+    anchors.top: pickRangeLabel.bottom
+    width: 300
+
+  TextEdit
+    id: extraNames
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 4
+    height: 20
+
+  Label
+    id: zenLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 6
+    color: #a0a0a0
+
+  Button
+    id: startButton
+    width: 110
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_helper.toggleHelper()
+
+  Button
+    id: saveButton
+    width: 80
+    anchors.left: prev.right
+    anchors.bottom: parent.bottom
+    margin-left: 6
+    @onClick: modules.game_mubia_helper.saveFromWindow()
+
+  Button
+    id: closeButton
+    !text: tr('Cerrar')
+    width: 70
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_helper.toggleWindow()
