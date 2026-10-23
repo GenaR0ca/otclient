@@ -2,18 +2,19 @@ PhantomMiniWindow
   id: mainhealthmanapanel
   draggable: true
   phantom: false
-  &panelHeight: 32
-  height: 32
+  &panelHeight: 64
+  height: 64
 
+  // Mubia: vida, SD (escudo PvP), mana y AG (energia de las habilidades), como en MU
   UIWidget
     id: health
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.top: parent.top
-    anchors.bottom: parent.verticalCenter
     margin-left: 8
     margin-right: 8
-    margin-top: 8
+    margin-top: 6
+    height: 11
     phantom: true
 
     UIWidget
@@ -25,7 +26,7 @@ PhantomMiniWindow
 
     Label
       id: text
-      !text: '155'
+      !text: '0'
       anchors.right: parent.right
       anchors.verticalCenter: parent.verticalCenter
       width: 44
@@ -55,14 +56,64 @@ PhantomMiniWindow
       width: 47
 
   UIWidget
+    id: sd
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: health.bottom
+    margin-left: 8
+    margin-right: 8
+    margin-top: 3
+    height: 11
+    phantom: false
+    !tooltip: tr('SD: escudo contra otros jugadores. Se recupera en zonas seguras.')
+
+    UIWidget
+      id: icon
+      image-source: /images/healthmana/sd_symbol
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      size: 12 11
+
+    Label
+      id: text
+      !text: '0'
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      width: 44
+      text-align: left
+      color: #c0c0c0ff
+
+    UIWidget
+      id: total
+      anchors.left: icon.right
+      anchors.right: text.left
+      anchors.verticalCenter: parent.verticalCenter
+      image-source: /images/healthmana/hitpoints_manapoints_bar_border
+      image-border-left: 6
+      image-border-right: 6
+      margin-left: 4
+      margin-right: 10
+      height: 11
+
+    UIWidget
+      id: current
+      anchors.left: total.left
+      image-source: /images/healthmana/sd_bar_filled
+      image-border-left: 5
+      image-border-right: 7
+      anchors.verticalCenter: total.verticalCenter
+      height: 11
+      width: 47
+
+  UIWidget
     id: mana
     anchors.left: parent.left
     anchors.right: parent.right
-    anchors.top: parent.verticalCenter
-    anchors.bottom: parent.bottom
+    anchors.top: sd.bottom
     margin-left: 8
     margin-right: 8
-    margin-top: 4
+    margin-top: 3
+    height: 11
     phantom: true
 
     UIWidget
@@ -74,7 +125,7 @@ PhantomMiniWindow
 
     Label
       id: text
-      !text: '60'
+      !text: '0'
       anchors.right: parent.right
       anchors.verticalCenter: parent.verticalCenter
       width: 44
@@ -97,6 +148,56 @@ PhantomMiniWindow
       id: current
       anchors.left: total.left
       image-source: /images/healthmana/mana_bar_filled
+      image-border-left: 5
+      image-border-right: 7
+      anchors.verticalCenter: total.verticalCenter
+      height: 11
+      width: 47
+
+  UIWidget
+    id: ag
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: mana.bottom
+    margin-left: 8
+    margin-right: 8
+    margin-top: 3
+    height: 11
+    phantom: false
+    !tooltip: tr('AG: energia para las habilidades. Se recupera sola.')
+
+    UIWidget
+      id: icon
+      image-source: /images/healthmana/ag_symbol
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      size: 12 11
+
+    Label
+      id: text
+      !text: '0'
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      width: 44
+      text-align: left
+      color: #c0c0c0ff
+
+    UIWidget
+      id: total
+      anchors.left: icon.right
+      anchors.right: text.left
+      anchors.verticalCenter: parent.verticalCenter
+      image-source: /images/healthmana/hitpoints_manapoints_bar_border
+      image-border-left: 6
+      image-border-right: 6
+      margin-left: 4
+      margin-right: 10
+      height: 11
+
+    UIWidget
+      id: current
+      anchors.left: total.left
+      image-source: /images/healthmana/ag_bar_filled
       image-border-left: 5
       image-border-right: 7
       anchors.verticalCenter: total.verticalCenter
