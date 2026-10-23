@@ -1,0 +1,116 @@
+ChaosSlot < Item
+  size: 34 34
+  virtual: true
+  phantom: false
+  draggable: false
+  border-width: 1
+  border-color: #5a3a1a
+  background-color: #1a0e0688
+
+MainWindow
+  id: mubiaChaosWindow
+  size: 320 420
+  !text: tr('Chaos Machine')
+  @onEscape: modules.game_mubia_chaos.close()
+
+  Label
+    id: titleLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    text-align: center
+    color: #f0c040
+
+  Panel
+    id: slots
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: prev.bottom
+    margin-top: 6
+    size: 290 146
+    layout:
+      type: grid
+      cell-size: 34 34
+      cell-spacing: 2
+      num-columns: 8
+      flow: true
+
+  Label
+    id: recipeLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 6
+    height: 36
+    text-wrap: true
+    text-align: center
+    color: #c0c0c0
+
+  Panel
+    id: resultPanel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 4
+    height: 40
+
+    Item
+      id: resultItem
+      size: 34 34
+      virtual: true
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      border-width: 1
+      border-color: #f0c040
+
+    Label
+      id: resultLabel
+      anchors.left: prev.right
+      anchors.right: parent.right
+      anchors.verticalCenter: parent.verticalCenter
+      margin-left: 6
+      height: 34
+      text-wrap: true
+      text-align: left
+
+  Label
+    id: zenLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: mixButton.top
+    margin-bottom: 6
+    text-align: center
+    color: #f0c040
+
+  Button
+    id: mixButton
+    !text: tr('Combinar')
+    width: 80
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_chaos.mix()
+
+  Button
+    id: clearButton
+    !text: tr('Vaciar')
+    width: 60
+    anchors.left: prev.right
+    anchors.bottom: parent.bottom
+    margin-left: 4
+    @onClick: modules.game_mubia_chaos.clearSlots(true)
+
+  Button
+    id: helpButton
+    !text: tr('Recetas')
+    width: 64
+    anchors.left: prev.right
+    anchors.bottom: parent.bottom
+    margin-left: 4
+    @onClick: modules.game_mubia_chaos.toggleHelp()
+
+  Button
+    id: closeButton
+    !text: tr('Cerrar')
+    width: 60
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_chaos.close()
