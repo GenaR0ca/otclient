@@ -249,6 +249,11 @@ function displayMessage(mode, text)
         return
     end
 
+    -- Mubia: al mirar un item de MU el servidor manda el texto con colores ({texto, #color})
+    if mode == MessageModes.Look and text:find('{[^}]+,%s*#%x%x%x%x%x%x}') then
+        msgtype = setmetatable({ colored = true }, { __index = msgtype })
+    end
+
     if msgtype == MessageSettings.none then
         return
     end
@@ -272,6 +277,9 @@ function displayMessage(mode, text)
         elseif msgtype == MessageSettings.loot or msgtype == MessageSettings.valuableLoot then
             local coloredText = ItemsDatabase.setColorLootMessage(text)
             label:setColoredText(coloredText)
+        elseif msgtype.colored then
+            label:setColor(msgtype.color)
+            label:setColoredText(text)
         else
             label:setText(text)
             label:setColor(msgtype.color)
