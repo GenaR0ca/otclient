@@ -207,6 +207,54 @@ local function onFreeCapacityChange(player, freeCapacity)
     end
 end
 
+-- Mubia: zen del personaje (opcode 82 del servidor; también el saldo del banco, que es donde se guarda)
+local ZEN_OPCODE = 82
+local zenAmount = 0
+
+local function formatZen(value, compact)
+    if compact and value >= 1000000 then
+        return string.format('%.1fkk', math.floor(value / 100000) / 10)
+    elseif compact and value >= 10000 then
+        return string.format('%dk', math.floor(value / 1000))
+    end
+    local text = tostring(math.floor(value))
+    while true do
+        local replaced, count = text:gsub('^(%d+)(%d%d%d)', '%1.%2')
+        text = replaced
+        if count == 0 then
+            break
+        end
+    end
+    return text
+end
+
+local function refreshZen()
+    local onPanel = inventoryController.ui.onPanel
+    if onPanel.zenPanel then
+        onPanel.zenPanel.zen:setText('Zen: ' .. formatZen(zenAmount))
+        onPanel.zenPanel:setTooltip(formatZen(zenAmount) .. ' zen')
+    end
+    local offBox = inventoryController.ui.offPanel.soulAndCapacity
+    if offBox and offBox.zen then
+        offBox.zen:setText(formatZen(zenAmount, true))
+        offBox:setTooltip(formatZen(zenAmount) .. ' zen')
+    end
+end
+
+local function onZen(protocol, opcode, data)
+    if type(data) == 'table' and tonumber(data.zen) then
+        zenAmount = tonumber(data.zen)
+        refreshZen()
+    end
+end
+
+local function onResourcesBalanceChange(balance, oldBalance, type)
+    if type == ResourceTypes.BANK_BALANCE then
+        zenAmount = balance
+        refreshZen()
+    end
+end
+
 function getIconsPanelOn()
     return inventoryController.ui.onPanel.icons
 end
@@ -270,6 +318,8 @@ inventoryController:setUI('inventory', modules.game_interface.getMainRightPanel(
 
 function inventoryController:onInit()
     refreshInventory_panel()
+    ProtocolGame.registerExtendedJSONOpcode(ZEN_OPCODE, onZen)
+    refreshZen()
     local ui = getInventoryUi()
 
     connect(inventoryController.ui.onPanel.pvp, {
@@ -326,7 +376,8 @@ function inventoryController:onGameStart()
         onFightModeChange = combatEvent,
         onChaseModeChange = combatEvent,
         onSafeFightChange = combatEvent,
-        onPVPModeChange = combatEvent
+        onPVPModeChange = combatEvent,
+        onResourcesBalanceChange = onResourcesBalanceChange
     }):execute()
 
     inventoryShrink = g_settings.getBoolean('mainpanel_shrink_inventory')
@@ -390,6 +441,7 @@ function inventoryController:onGameEnd()
 end
 
 function inventoryController:onTerminate()
+    ProtocolGame.unregisterExtendedJSONOpcode(ZEN_OPCODE)
     if iconTopMenu then
         iconTopMenu:destroy()
         iconTopMenu = nil
