@@ -57,6 +57,7 @@ Module
     - game_mubia_stats
     - game_mubia_warp
     - game_mubia_inventario
+    - game_mubia_chaos
 
   @onLoad: init()
   @onUnload: terminate()
