@@ -59,6 +59,7 @@ Module
     - game_mubia_inventario
     - game_mubia_tienda
     - game_mubia_helper
+    - game_mubia_party
 
   @onLoad: init()
   @onUnload: terminate()
