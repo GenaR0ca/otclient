@@ -14,6 +14,10 @@ ShopSlot < Item
     border-color: #f0c040
     background-color: #4a3010aa
 
+ShopEmpty < UIWidget
+  size: 34 34
+  phantom: true
+
 ShopTab < Button
   width: 80
   height: 20

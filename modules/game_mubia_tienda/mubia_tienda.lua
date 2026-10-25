@@ -110,6 +110,68 @@ local function selectEntry(entry, widget)
     updateInfo()
 end
 
+-- Sets de MU: cada pieza va en su fila (casco, armadura, pantalón, guantes, botas)
+local COLUMNS = 8
+local SET_PIECES = { helm = 1, armor = 2, pants = 3, gloves = 4, boots = 5 }
+
+-- "vine helm (luck)" -> "vine", 1
+local function setPiece(entry)
+    local name = entry.name:lower():gsub('%s*%(.-%)%s*$', '')
+    local setName, piece = name:match('^(.-)%s+(%a+)$')
+    if setName and SET_PIECES[piece] then
+        return setName, SET_PIECES[piece]
+    end
+    return nil
+end
+
+-- Orden de la grilla: los sets quedan en columnas (un set por columna, cada pieza en su fila).
+-- Devuelve la lista de casillas; false = casilla vacía.
+local function gridCells(list)
+    if mode ~= 'buy' or search ~= '' then
+        return list
+    end
+    local cells = {}
+    local function padRow()
+        while #cells % COLUMNS ~= 0 do
+            cells[#cells + 1] = false
+        end
+    end
+    local i = 1
+    while i <= #list do
+        local setName = setPiece(list[i])
+        if not setName then
+            cells[#cells + 1] = list[i]
+            i = i + 1
+        else
+            -- juntar los sets seguidos (hasta COLUMNS por bloque)
+            local sets, order = {}, {}
+            while i <= #list and #order <= COLUMNS do
+                local name, row = setPiece(list[i])
+                if not name then
+                    break
+                end
+                if not sets[name] then
+                    if #order == COLUMNS then
+                        break
+                    end
+                    sets[name] = {}
+                    order[#order + 1] = name
+                end
+                sets[name][row] = list[i]
+                i = i + 1
+            end
+            padRow()
+            for row = 1, 5 do
+                for column = 1, COLUMNS do
+                    local name = order[column]
+                    cells[#cells + 1] = name and sets[name][row] or false
+                end
+            end
+        end
+    end
+    return cells
+end
+
 local function buildGrid()
     if not window then
         return
@@ -118,8 +180,15 @@ local function buildGrid()
     panel:destroyChildren()
     local list = currentList()
     local selectedWidget = nil
-    for _, entry in ipairs(list) do
+    local firstWidget = nil
+    for _, entry in ipairs(gridCells(list)) do
+        if not entry then
+            g_ui.createWidget('ShopEmpty', panel)
+            goto continue
+        end
         local slot = g_ui.createWidget('ShopSlot', panel)
+        firstWidget = firstWidget or slot
+        slot.entry = entry
         slot:setItem(entry.ptr)
         if mode == 'sell' then
             slot:setItemCount(ownedCount(entry))
@@ -144,6 +213,7 @@ local function buildGrid()
             selectedWidget = slot
             selected = entry
         end
+        ::continue::
     end
 
     local emptyLabel = window:getChildById('emptyLabel')
@@ -163,7 +233,7 @@ local function buildGrid()
         selectedWidget:setChecked(true)
         updateInfo()
     elseif list[1] then
-        selectEntry(list[1], panel:getChildByIndex(1))
+        selectEntry(firstWidget and firstWidget.entry or list[1], firstWidget)
     else
         selectEntry(nil, nil)
     end
