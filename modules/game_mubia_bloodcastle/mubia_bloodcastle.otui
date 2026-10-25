@@ -1,11 +1,10 @@
-CastleButton < Button
+EventButton < Button
   height: 30
   font: verdana-11px-rounded
 
 MainWindow
-  id: mubiaBloodCastleWindow
-  size: 280 470
-  !text: tr('Messenger of Archangel')
+  id: mubiaEventWindow
+  size: 280 430
   @onEscape: modules.game_mubia_bloodcastle.hide()
 
   Label
@@ -20,7 +19,7 @@ MainWindow
     color: #e0e0e0
 
   Panel
-    id: castles
+    id: entries
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.top: message.bottom

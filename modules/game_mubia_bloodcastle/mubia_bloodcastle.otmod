@@ -1,6 +1,6 @@
 Module
   name: game_mubia_bloodcastle
-  description: Mubia Online - ventana del Messenger of Archangel para elegir el Blood Castle (como en MU)
+  description: Mubia Online - ventanas de Blood Castle (Messenger of Archangel) y Devil Square (Charon), como en MU
   author: Mubia Online
   sandboxed: true
   scripts: [ mubia_bloodcastle ]

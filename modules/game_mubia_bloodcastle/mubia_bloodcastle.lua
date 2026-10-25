@@ -1,16 +1,10 @@
--- Mubia Online: ventana del Messenger of Archangel (Blood Castle), como en MU.
--- Al hablarle al NPC el servidor manda la lista de castillos (opcode 88, data/scripts/mubia/npcs_mu.lua):
--- nivel de cada uno, si puedes entrar y cuál te corresponde. Al elegir uno se manda "enter:N".
-local OPCODE = 88
+-- Mubia Online: ventanas de los eventos de MU al hacer clic en su NPC.
+--   Messenger of Archangel -> Blood Castle (opcode 88), Charon -> Devil Square (opcode 90).
+-- El servidor (data/scripts/mubia/npcs_mu.lua) manda el título, el texto y la lista: nivel de cada uno,
+-- si puedes entrar y cuál te corresponde. Al elegir uno se manda "enter:N" por el mismo opcode.
+local OPCODES = { 88, 90 }
 
 local window = nil
-
-local function send(text)
-    local protocol = g_game.getProtocolGame()
-    if protocol then
-        protocol:sendExtendedOpcode(OPCODE, text)
-    end
-end
 
 function hide()
     if window then
@@ -18,24 +12,30 @@ function hide()
     end
 end
 
-local function open(castles)
-    local panel = window:getChildById('castles')
+local function open(opcode, data)
+    window:setText(data.title or '')
+    window:getChildById('message'):setText(data.message or '')
+    local panel = window:getChildById('entries')
     panel:destroyChildren()
-    for _, castle in ipairs(castles) do
-        local button = g_ui.createWidget('CastleButton', panel)
-        button:setText(castle.label or '')
-        button:setEnabled(castle.enabled == true)
-        if castle.enabled and castle.mine then
+    for _, entry in ipairs(data.entries or {}) do
+        local button = g_ui.createWidget('EventButton', panel)
+        button:setText(entry.label or '')
+        button:setEnabled(entry.enabled == true)
+        if entry.enabled and entry.mine then
             button:setColor('#ffd866')
         end
-        if castle.reason and castle.reason ~= '' then
-            button:setTooltip(castle.reason)
+        if entry.reason and entry.reason ~= '' then
+            button:setTooltip(entry.reason)
         end
-        local level = castle.level
+        local level = entry.level
         button.onClick = function()
-            send('enter:' .. level)
+            local protocol = g_game.getProtocolGame()
+            if protocol then
+                protocol:sendExtendedOpcode(opcode, 'enter:' .. level)
+            end
         end
     end
+    window:setHeight(140 + #panel:getChildren() * 36)
     window:show()
     window:raise()
     window:focus()
@@ -46,7 +46,7 @@ local function onMessage(protocol, opcode, data)
         return
     end
     if data.action == 'open' then
-        open(data.castles or {})
+        open(opcode, data)
     elseif data.action == 'close' then
         hide()
     end
@@ -55,15 +55,17 @@ end
 function init()
     window = g_ui.displayUI('mubia_bloodcastle')
     window:hide()
-    -- Latin-1, como el resto de los textos de Mubia en el cliente
-    window:getChildById('message'):setText('Tu voluntad de ayudar al Arc\225ngel es apreciada. Pero ten cuidado, joven guerrero: Blood Castle es un lugar peligroso. Que Dios te acompa\241e.')
-    ProtocolGame.registerExtendedJSONOpcode(OPCODE, onMessage)
+    for _, opcode in ipairs(OPCODES) do
+        ProtocolGame.registerExtendedJSONOpcode(opcode, onMessage)
+    end
     connect(g_game, { onGameEnd = hide })
 end
 
 function terminate()
     disconnect(g_game, { onGameEnd = hide })
-    ProtocolGame.unregisterExtendedJSONOpcode(OPCODE)
+    for _, opcode in ipairs(OPCODES) do
+        ProtocolGame.unregisterExtendedJSONOpcode(opcode)
+    end
     if window then
         window:destroy()
         window = nil
