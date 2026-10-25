@@ -831,6 +831,11 @@ function createThingMenu(menuPosition, lookThing, useThing, creatureThing)
                     menu:addOption(tr('Talk'), function()
                         g_game.talk("hi")
                     end)
+                    if modules.game_mubia_tienda then
+                        menu:addOption('Tienda', function()
+                            modules.game_mubia_tienda.talkTo(creatureThing)
+                        end)
+                    end
                 end
 
                 if g_game.getAttackingCreature() ~= creatureThing then
@@ -1010,6 +1015,14 @@ function processMouseAction(menuPosition, mouseButton, autoWalkPos, lookThing, u
 
     local smartLeftClick = modules.client_options.getOption('smartLeftClick')
     local classicControls = modules.client_options.getOption('classicControl')
+
+    -- Mubia: click derecho o izquierdo en un NPC abre su tienda estilo MU (o le habla si no vende nada)
+    if creatureThing and creatureThing:isNpc() and (mouseButton == MouseRightButton or mouseButton == MouseLeftButton) and
+    keyboardModifiers == KeyboardNoModifier and modules.game_mubia_tienda then
+        if modules.game_mubia_tienda.talkTo(creatureThing) then
+            return true
+        end
+    end
 
     -- Classic controls: right-click on NPC says "hi"
     if creatureThing and creatureThing:isNpc() and mouseButton == MouseRightButton and 

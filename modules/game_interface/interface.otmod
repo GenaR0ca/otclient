@@ -15,7 +15,6 @@ Module
     - game_mainpanel
     - game_prey
     - game_imbuing
-    - game_imbuementtracker
     - game_hotkeys
     - game_questlog
     - game_textmessage
@@ -37,7 +36,6 @@ Module
     - game_spelllist
     - game_cooldown
     - game_modaldialog
-    - game_unjustifiedpoints
     - game_shaders
     - game_attachedeffects
     - game_paperdolls
@@ -53,14 +51,18 @@ Module
     - game_cyclopedia
     - game_creatureinformation
     - game_rewardwall
-    - game_forge
     - game_tutorial
     - game_inspect
     - game_taskboard
-    - game_wheel
     - game_mubia_stats
     - game_mubia_warp
-    - game_proficiency
+    - game_mubia_inventario
+    - game_mubia_chaos
+    - game_mubia_tienda
+    - game_mubia_helper
+    - game_mubia_party
+    - game_mubia_buffs
+    - game_mubia_bloodcastle
 
   @onLoad: init()
   @onUnload: terminate()

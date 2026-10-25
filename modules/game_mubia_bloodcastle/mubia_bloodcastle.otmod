@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_bloodcastle
+  description: Mubia Online - ventana del Messenger of Archangel para elegir el Blood Castle (como en MU)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_bloodcastle ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface

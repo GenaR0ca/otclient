@@ -1,0 +1,40 @@
+CastleButton < Button
+  height: 30
+  font: verdana-11px-rounded
+
+MainWindow
+  id: mubiaBloodCastleWindow
+  size: 280 470
+  !text: tr('Messenger of Archangel')
+  @onEscape: modules.game_mubia_bloodcastle.hide()
+
+  Label
+    id: message
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    margin-top: 4
+    height: 72
+    text-wrap: true
+    text-align: center
+    color: #e0e0e0
+
+  Panel
+    id: castles
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: message.bottom
+    anchors.bottom: closeButton.top
+    margin-top: 6
+    margin-bottom: 8
+    layout:
+      type: verticalBox
+      spacing: 6
+
+  Button
+    id: closeButton
+    !text: tr('Cerrar')
+    width: 70
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_bloodcastle.hide()
