@@ -3,7 +3,7 @@ WarpButton < Button
 
 MainWindow
   id: mubiaWarpWindow
-  size: 240 120
+  size: 440 120
   !text: tr('Mapa')
   @onEscape: modules.game_mubia_warp.toggle()
 
@@ -24,8 +24,10 @@ MainWindow
     margin-top: 8
     margin-bottom: 8
     layout:
-      type: verticalBox
-      spacing: 4
+      type: grid
+      cell-size: 200 24
+      cell-spacing: 4
+      num-columns: 2
 
   Button
     id: closeButton
