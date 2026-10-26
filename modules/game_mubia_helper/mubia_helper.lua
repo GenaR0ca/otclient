@@ -2,7 +2,7 @@
 -- El cliente elige a qué monstruo atacar y camina hacia él. El servidor (opcode 86) lanza las
 -- habilidades, toma pociones, usa Heal, recoge los items y acepta o rechaza las parties
 -- (data/libs/systems/mubia_helper.lua).
--- Inicio (Home) prende y apaga el Helper; H abre la ventana con sus 4 pestañas.
+-- Inicio (Home, se puede cambiar en Other Settings) prende y apaga el Helper; H abre la ventana con sus 4 pestañas.
 local OPCODE = 86
 local THINK_INTERVAL = 250
 local STUCK_TIME = 8000 -- si el monstruo no pierde vida en este tiempo, se busca otro
@@ -35,6 +35,7 @@ local DEFAULT_CONFIG = {
     lootOther = false, lootWords = '',
     -- Other Settings
     party = 'none',
+    autoQuiver = false,
 }
 
 local ATTACK_KINDS = { attack = true }
@@ -118,10 +119,78 @@ local function configText()
     return table.concat(parts, ';')
 end
 
+-- "Other Settings": el servidor las guarda en el personaje y funcionan aunque el Helper esté apagado
 local function sendPartyMode()
     if config then
         send('party|' .. config.party)
+        send('quiver|' .. (config.autoQuiver and '1' or '0'))
     end
+end
+
+-- ---------------------------------------------------------------------------
+-- Atajo (tecla) para prender y apagar el Helper
+-- ---------------------------------------------------------------------------
+
+local KEYBIND_CATEGORY = 'Windows'
+local KEYBIND_TOGGLE = 'Mubia: prender/apagar Mubia Helper'
+local hotkeyWindow = nil
+
+local function getToggleKey()
+    local ok, keys = pcall(Keybind.getKeybindKeys, KEYBIND_CATEGORY, KEYBIND_TOGGLE, CHAT_MODE.OFF)
+    if ok and keys and keys.primary and keys.primary ~= '' then
+        return keys.primary
+    end
+    return 'ninguna'
+end
+
+local function closeHotkeyWindow()
+    if hotkeyWindow then
+        hotkeyWindow:destroy()
+        hotkeyWindow = nil
+    end
+end
+
+local MODIFIER_KEYS = { [KeyShift] = true, [KeyCtrlCmd] = true, [KeyControl] = true, [KeyAltOpt] = true, [KeyMeta] = true }
+
+-- Ventanita que espera a que el jugador apriete la tecla (o combinación) que quiere usar
+local function openHotkeyWindow(onChanged)
+    closeHotkeyWindow()
+    hotkeyWindow = g_ui.createWidget('HelperHotkeyCapture', rootWidget)
+    hotkeyWindow.onDestroy = function()
+        hotkeyWindow = nil
+    end
+    hotkeyWindow:getChildById('info'):setText('Apret la tecla o combinaci£n que quieras usar (por ejemplo F12 o Ctrl+H). Esc para cancelar.')
+    hotkeyWindow:getChildById('preview'):setText('Actual: ' .. getToggleKey())
+    hotkeyWindow.onKeyDown = function(widget, keyCode, keyboardModifiers)
+        if keyCode == KeyEscape then
+            closeHotkeyWindow()
+            return true
+        end
+        if MODIFIER_KEYS[keyCode] then
+            return true -- esperar la tecla que acompaña a Ctrl/Shift/Alt
+        end
+        local combo = determineKeyComboDesc(keyCode, keyboardModifiers)
+        if Keybind.isKeyComboUsed(combo, KEYBIND_CATEGORY, KEYBIND_TOGGLE, CHAT_MODE.OFF) then
+            widget:getChildById('preview'):setText(combo .. ' ya se usa para otra cosa, eleg otra.')
+            return true
+        end
+        -- con el chat activo, una tecla sola escribiría en el chat: se usa con Ctrl
+        local chatCombo = combo
+        if not combo:find('+', 1, true) and not combo:match('^F%d+$') then
+            chatCombo = 'Ctrl+' .. combo
+        end
+        Keybind.setPrimaryActionKey(KEYBIND_CATEGORY, KEYBIND_TOGGLE, Keybind.currentPreset, combo, CHAT_MODE.OFF)
+        Keybind.setPrimaryActionKey(KEYBIND_CATEGORY, KEYBIND_TOGGLE, Keybind.currentPreset, chatCombo, CHAT_MODE.ON)
+        closeHotkeyWindow()
+        modules.game_textmessage.displayStatusMessage('Mubia Helper: ahora se prende y apaga con ' .. combo .. '.')
+        if onChanged then
+            onChanged()
+        end
+        return true
+    end
+    hotkeyWindow:show()
+    hotkeyWindow:raise()
+    hotkeyWindow:focus()
 end
 
 local function distance(a, b)
@@ -241,11 +310,11 @@ local function updateStatus()
     if helperOn then
         status:setText('Mubia Helper: PRENDIDO')
         status:setColor('#60ff60')
-        window:getChildById('startButton'):setText('Detener (Inicio)')
+        window:getChildById('startButton'):setText('Detener (' .. getToggleKey() .. ')')
     else
         status:setText('Mubia Helper: apagado')
         status:setColor('#ff6060')
-        window:getChildById('startButton'):setText('Iniciar (Inicio)')
+        window:getChildById('startButton'):setText('Iniciar (' .. getToggleKey() .. ')')
     end
     if button then
         button:setOn(helperOn)
@@ -307,6 +376,8 @@ local function fillWindow()
 
     get('partyAccept'):setChecked(config.party == 'accept')
     get('partyReject'):setChecked(config.party == 'reject')
+    get('autoQuiver'):setChecked(config.autoQuiver)
+    get('hotkeyLabel'):setText('Prender/apagar con: ' .. getToggleKey())
     updateStatus()
 end
 
@@ -339,6 +410,7 @@ local function readWindow()
     config.lootScroll = get('lootScroll'):isChecked()
     config.lootOther = get('lootOther'):isChecked()
     config.lootWords = get('lootWords'):getText()
+    config.autoQuiver = get('autoQuiver'):isChecked()
     if get('partyAccept'):isChecked() then
         config.party = 'accept'
     elseif get('partyReject'):isChecked() then
@@ -658,6 +730,18 @@ local function setupOther(panel)
         partyReject = 'Rechazar invitaciones autom\225ticamente',
         partyNote = 'Si no marc\225s ninguna, las invitaciones llegan como siempre. Funciona aunque el Helper est\233 apagado.',
     })
+    setTexts(panel, {
+        quiverTitle = 'Elfa: flechas y bolts',
+        autoQuiver = 'Poner flechas o bolts en el quiver solo (si hay lugar)',
+        hotkeyTitle = 'Atajo',
+        hotkeyButton = 'Cambiar tecla',
+    })
+    panel:getChildById('hotkeyButton').onClick = function()
+        openHotkeyWindow(function()
+            get('hotkeyLabel'):setText('Prender/apagar con: ' .. getToggleKey())
+            updateStatus()
+        end)
+    end
     local accept, reject = panel:getChildById('partyAccept'), panel:getChildById('partyReject')
     accept.onCheckChange = function(widget, checked)
         if checked then
@@ -719,6 +803,7 @@ function terminate()
     disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     setHelperOn(false)
     closePicker()
+    closeHotkeyWindow()
     Keybind.delete('Windows', 'Mubia: ventana del Mubia Helper')
     Keybind.delete('Windows', 'Mubia: prender/apagar Mubia Helper')
     ProtocolGame.unregisterExtendedJSONOpcode(OPCODE)

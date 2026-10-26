@@ -353,6 +353,62 @@ HelperOtherPanel < Panel
     text-auto-resize: true
     color: #a0a0a0
 
+  HelperTitle
+    id: quiverTitle
+    margin-top: 16
+
+  HelperCheck
+    id: autoQuiver
+
+  HelperTitle
+    id: hotkeyTitle
+    margin-top: 16
+
+  Label
+    id: hotkeyLabel
+    anchors.left: parent.left
+    anchors.top: prev.bottom
+    margin-top: 10
+    width: 200
+    text-auto-resize: false
+
+  Button
+    id: hotkeyButton
+    anchors.left: prev.right
+    anchors.verticalCenter: prev.verticalCenter
+    margin-left: 4
+    width: 100
+
+HelperHotkeyCapture < MainWindow
+  id: mubiaHelperHotkey
+  size: 300 130
+  !text: tr('Atajo del Mubia Helper')
+
+  Label
+    id: info
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    text-wrap: true
+    text-auto-resize: true
+    text-align: center
+
+  Label
+    id: preview
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: prev.bottom
+    margin-top: 8
+    text-align: center
+    color: #f0c040
+
+  Button
+    id: cancelButton
+    !text: tr('Cancelar')
+    width: 70
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: self:getParent():destroy()
 
 HelperSpellPicker < MainWindow
   id: mubiaHelperPicker
