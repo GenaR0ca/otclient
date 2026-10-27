@@ -63,6 +63,7 @@ Module
     - game_mubia_party
     - game_mubia_buffs
     - game_mubia_bloodcastle
+    - game_mubia_sebina
 
   @onLoad: init()
   @onUnload: terminate()
