@@ -57,7 +57,13 @@ Module
     - game_mubia_stats
     - game_mubia_warp
     - game_mubia_inventario
+    - game_mubia_chaos
     - game_mubia_tienda
+    - game_mubia_helper
+    - game_mubia_party
+    - game_mubia_buffs
+    - game_mubia_bloodcastle
+    - game_mubia_sebina
 
   @onLoad: init()
   @onUnload: terminate()
