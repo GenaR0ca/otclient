@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_party
+  description: Mubia Online - vida de los miembros de la party arriba a la derecha (como en MU Online)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_party ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface
