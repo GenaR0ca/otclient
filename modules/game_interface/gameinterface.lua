@@ -1016,8 +1016,8 @@ function processMouseAction(menuPosition, mouseButton, autoWalkPos, lookThing, u
     local smartLeftClick = modules.client_options.getOption('smartLeftClick')
     local classicControls = modules.client_options.getOption('classicControl')
 
-    -- Mubia: click derecho en un NPC abre su tienda estilo MU (o le habla si no vende nada)
-    if creatureThing and creatureThing:isNpc() and mouseButton == MouseRightButton and
+    -- Mubia: click derecho o izquierdo en un NPC abre su tienda estilo MU (o le habla si no vende nada)
+    if creatureThing and creatureThing:isNpc() and (mouseButton == MouseRightButton or mouseButton == MouseLeftButton) and
     keyboardModifiers == KeyboardNoModifier and modules.game_mubia_tienda then
         if modules.game_mubia_tienda.talkTo(creatureThing) then
             return true

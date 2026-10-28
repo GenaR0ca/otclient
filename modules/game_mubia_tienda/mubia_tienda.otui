@@ -14,6 +14,10 @@ ShopSlot < Item
     border-color: #f0c040
     background-color: #4a3010aa
 
+ShopEmpty < UIWidget
+  size: 34 34
+  phantom: true
+
 ShopTab < Button
   width: 80
   height: 20
@@ -22,7 +26,7 @@ ShopTab < Button
 
 MainWindow
   id: mubiaShopWindow
-  size: 336 494
+  size: 336 522
   !text: tr('Tienda')
   @onEscape: modules.game_mubia_tienda.close()
 
@@ -50,9 +54,27 @@ MainWindow
     text-align: right
     color: #a08060
 
+  Label
+    id: searchText
+    !text: tr('Buscar:')
+    anchors.top: buyTab.bottom
+    anchors.left: parent.left
+    margin-top: 9
+    width: 46
+    color: #c0c0c0
+
+  TextEdit
+    id: searchEdit
+    anchors.top: buyTab.bottom
+    anchors.left: prev.right
+    anchors.right: parent.right
+    margin-top: 6
+    max-length: 30
+    placeholder: nombre del item
+
   ScrollablePanel
     id: itemsPanel
-    anchors.top: buyTab.bottom
+    anchors.top: searchEdit.bottom
     anchors.left: parent.left
     margin-top: 6
     size: 290 290

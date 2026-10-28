@@ -2,6 +2,9 @@
 -- Click derecho en un NPC: si vende algo se abre su tienda (opcode 85); si no, le dice "hi" como siempre.
 -- La tienda es una grilla con todos los items a la vista (con barra para bajar si son muchos).
 -- Click en un item lo elige, doble click lo compra (o lo vende). Arrastrá un item de tu inventario a la tienda para venderlo.
+-- Vender: el servidor manda la lista de tu bolsa (tecla I) con el precio de cada item ({"sell":[...]}).
+-- Todo NPC con tienda compra cualquier item; si es valioso (+6, Excellent o joya) pregunta antes.
+-- Arriba hay un buscador que filtra los items por nombre.
 local OPCODE = 85
 local TALK_RANGE = 3
 local MAX_AMOUNT = 100
@@ -14,6 +17,8 @@ local goods = {} -- ['id_subtipo'] = cantidad que tiene el jugador
 local money = 0
 local selected = nil
 local npcName = nil
+local npcId = nil
+local search = ''
 local walkEvent = nil
 
 local function formatZen(value)
@@ -27,6 +32,9 @@ local function goodsKey(ptr)
 end
 
 local function ownedCount(entry)
+    if entry.slot then
+        return entry.count
+    end
     return goods[goodsKey(entry.ptr)] or 0
 end
 
@@ -37,13 +45,18 @@ local function priceText(price)
     return formatZen(price) .. ' zen'
 end
 
-local function currentList()
-    if mode == 'buy' then
-        return buyItems
+local function matchesSearch(entry)
+    if search == '' then
+        return true
     end
+    return entry.name:lower():find(search, 1, true) ~= nil
+end
+
+local function currentList()
+    local source = mode == 'buy' and buyItems or sellItems
     local list = {}
-    for _, entry in ipairs(sellItems) do
-        if ownedCount(entry) > 0 then
+    for _, entry in ipairs(source) do
+        if (mode == 'buy' or ownedCount(entry) > 0) and matchesSearch(entry) then
             list[#list + 1] = entry
         end
     end
@@ -97,6 +110,68 @@ local function selectEntry(entry, widget)
     updateInfo()
 end
 
+-- Sets de MU: cada pieza va en su fila (casco, armadura, pantalón, guantes, botas)
+local COLUMNS = 8
+local SET_PIECES = { helm = 1, armor = 2, pants = 3, gloves = 4, boots = 5 }
+
+-- "vine helm (luck)" -> "vine", 1
+local function setPiece(entry)
+    local name = entry.name:lower():gsub('%s*%(.-%)%s*$', '')
+    local setName, piece = name:match('^(.-)%s+(%a+)$')
+    if setName and SET_PIECES[piece] then
+        return setName, SET_PIECES[piece]
+    end
+    return nil
+end
+
+-- Orden de la grilla: los sets quedan en columnas (un set por columna, cada pieza en su fila).
+-- Devuelve la lista de casillas; false = casilla vacía.
+local function gridCells(list)
+    if mode ~= 'buy' or search ~= '' then
+        return list
+    end
+    local cells = {}
+    local function padRow()
+        while #cells % COLUMNS ~= 0 do
+            cells[#cells + 1] = false
+        end
+    end
+    local i = 1
+    while i <= #list do
+        local setName = setPiece(list[i])
+        if not setName then
+            cells[#cells + 1] = list[i]
+            i = i + 1
+        else
+            -- juntar los sets seguidos (hasta COLUMNS por bloque)
+            local sets, order = {}, {}
+            while i <= #list and #order <= COLUMNS do
+                local name, row = setPiece(list[i])
+                if not name then
+                    break
+                end
+                if not sets[name] then
+                    if #order == COLUMNS then
+                        break
+                    end
+                    sets[name] = {}
+                    order[#order + 1] = name
+                end
+                sets[name][row] = list[i]
+                i = i + 1
+            end
+            padRow()
+            for row = 1, 5 do
+                for column = 1, COLUMNS do
+                    local name = order[column]
+                    cells[#cells + 1] = name and sets[name][row] or false
+                end
+            end
+        end
+    end
+    return cells
+end
+
 local function buildGrid()
     if not window then
         return
@@ -105,8 +180,15 @@ local function buildGrid()
     panel:destroyChildren()
     local list = currentList()
     local selectedWidget = nil
-    for _, entry in ipairs(list) do
+    local firstWidget = nil
+    for _, entry in ipairs(gridCells(list)) do
+        if not entry then
+            g_ui.createWidget('ShopEmpty', panel)
+            goto continue
+        end
         local slot = g_ui.createWidget('ShopSlot', panel)
+        firstWidget = firstWidget or slot
+        slot.entry = entry
         slot:setItem(entry.ptr)
         if mode == 'sell' then
             slot:setItemCount(ownedCount(entry))
@@ -127,15 +209,20 @@ local function buildGrid()
             end
             return false
         end
-        if selected and selected.ptr:getId() == entry.ptr:getId() and selected.ptr:getSubType() == entry.ptr:getSubType() then
+        if selected and selected.ptr:getId() == entry.ptr:getId() and selected.ptr:getSubType() == entry.ptr:getSubType() and selected.slot == entry.slot then
             selectedWidget = slot
             selected = entry
         end
+        ::continue::
     end
 
     local emptyLabel = window:getChildById('emptyLabel')
     if #list == 0 then
-        emptyLabel:setText(mode == 'buy' and 'Este NPC no vende nada.' or 'No tienes nada que este NPC quiera comprar.\nArrastra items de tu inventario aqui para venderlos.')
+        if search ~= '' then
+            emptyLabel:setText('Ningun item se llama asi.')
+        else
+            emptyLabel:setText(mode == 'buy' and 'Este NPC no vende nada.' or 'No tienes items en tu inventario (tecla I) para vender.')
+        end
         emptyLabel:show()
     else
         emptyLabel:hide()
@@ -146,7 +233,7 @@ local function buildGrid()
         selectedWidget:setChecked(true)
         updateInfo()
     elseif list[1] then
-        selectEntry(list[1], panel:getChildByIndex(1))
+        selectEntry(firstWidget and firstWidget.entry or list[1], firstWidget)
     else
         selectEntry(nil, nil)
     end
@@ -156,14 +243,10 @@ function setMode(newMode)
     if not window then
         return
     end
-    if newMode == 'sell' and #sellItems == 0 then
-        newMode = 'buy'
-    end
     mode = newMode
     selected = nil
     window:getChildById('buyTab'):setChecked(mode == 'buy')
     window:getChildById('sellTab'):setChecked(mode == 'sell')
-    window:getChildById('sellTab'):setEnabled(#sellItems > 0)
     window:getChildById('buyTab'):setEnabled(#buyItems > 0)
     window:getChildById('tradeButton'):setText(mode == 'buy' and 'Comprar' or 'Vender')
     window:getChildById('hintLabel'):setText(mode == 'buy' and 'Doble click compra. Click derecho: ver item.' or 'Doble click vende. O arrastra items aqui.')
@@ -182,11 +265,49 @@ function trade()
         end
         g_game.buyItem(selected.ptr, amount, true, false)
     else
-        amount = math.min(amount, ownedCount(selected))
-        if amount > 0 then
-            g_game.sellItem(selected.ptr, amount, true)
+        sellEntry(selected, math.min(amount, ownedCount(selected)))
+    end
+end
+
+local confirmBox = nil
+
+local function sendSell(entry, amount, confirmed)
+    local protocol = g_game.getProtocolGame()
+    if protocol and npcId then
+        protocol:sendExtendedOpcode(OPCODE, string.format('sell|%d|%d|%d|%d|%d', npcId, entry.slot, entry.ptr:getId(), amount, confirmed and 1 or 0))
+    end
+end
+
+-- Vende un item de la bolsa. Si es valioso pregunta primero.
+function sellEntry(entry, amount)
+    if not entry or amount < 1 then
+        return
+    end
+    if not entry.valuable then
+        sendSell(entry, amount, false)
+        return
+    end
+    if confirmBox then
+        confirmBox:destroy()
+        confirmBox = nil
+    end
+    local function yes()
+        if confirmBox then
+            confirmBox:destroy()
+            confirmBox = nil
+        end
+        sendSell(entry, amount, true)
+    end
+    local function no()
+        if confirmBox then
+            confirmBox:destroy()
+            confirmBox = nil
         end
     end
+    confirmBox = displayGeneralBox('Item valioso', string.format('%s es un item valioso.\nEl NPC te paga %s.\n\nSeguro que quieres venderlo?', entry.name, priceText(entry.price * amount)), {
+        { text = 'Vender', callback = yes },
+        { text = 'Cancelar', callback = no },
+    }, yes, no)
 end
 
 -- Arrastrar un item del inventario a la tienda lo vende
@@ -200,14 +321,22 @@ local function onDropItem(self, widget, mousePos)
         modules.game_textmessage.displayFailureMessage('Solo puedes vender items de tu inventario.')
         return false
     end
+    -- items de la bolsa: pos.y = 64 + numero de contenedor, pos.z = casilla
+    local found = nil
     for _, entry in ipairs(sellItems) do
         if entry.ptr:getId() == item:getId() then
-            local amount = math.min(item:getCount(), MAX_AMOUNT)
-            g_game.sellItem(entry.ptr, amount, true)
-            return true
+            if pos.y >= 64 and entry.slot == pos.z then
+                found = entry
+                break
+            end
+            found = found or entry
         end
     end
-    modules.game_textmessage.displayFailureMessage('Este NPC no compra ese item.')
+    if found then
+        sellEntry(found, math.min(item:getCount(), found.count))
+        return true
+    end
+    modules.game_textmessage.displayFailureMessage('Solo puedes vender items de tu inventario (tecla I).')
     return false
 end
 
@@ -220,6 +349,11 @@ local function show()
         window:getChildById('amount').onTextChange = function()
             updateInfo()
         end
+        window:getChildById('searchEdit').onTextChange = function(widget, text)
+            search = (text or ''):lower()
+            selected = nil
+            buildGrid()
+        end
     end
     window:setText(npcName and ('Tienda de ' .. npcName) or 'Tienda')
     window:show()
@@ -229,22 +363,35 @@ end
 
 local function onOpenNpcTrade(items)
     buyItems = {}
-    sellItems = {}
     for _, data in ipairs(items or {}) do
-        local entry = { ptr = data[1], name = data[2], price = data[4] }
-        local sellPrice = data[5]
-        -- precio de compra y venta 0 = item gratis del NPC
-        if data[4] > 0 or sellPrice == 0 then
-            buyItems[#buyItems + 1] = entry
-        end
-        if sellPrice > 0 then
-            sellItems[#sellItems + 1] = { ptr = data[1], name = data[2], price = sellPrice }
-        end
+        -- todo lo de la lista se compra (precio 0 = gratis); la venta la maneja el servidor
+        buyItems[#buyItems + 1] = { ptr = data[1], name = data[2], price = data[4] }
     end
     local player = g_game.getLocalPlayer()
     money = player and player:getTotalMoney() or 0
+    search = ''
     show()
+    window:getChildById('searchEdit'):setText('')
     setMode(#buyItems > 0 and 'buy' or 'sell')
+end
+
+-- Lista de items de la bolsa que puedes vender (la manda el servidor)
+local function onSellList(list)
+    sellItems = {}
+    for _, data in ipairs(list or {}) do
+        local item = Item.create(tonumber(data.id), math.max(1, tonumber(data.count) or 1))
+        sellItems[#sellItems + 1] = {
+            ptr = item,
+            slot = tonumber(data.slot),
+            count = tonumber(data.count) or 1,
+            name = tostring(data.name or ''),
+            price = tonumber(data.price) or 0,
+            valuable = data.valuable == true,
+        }
+    end
+    if window and window:isVisible() and mode == 'sell' then
+        buildGrid()
+    end
 end
 
 local function onPlayerGoods(playerMoney, items)
@@ -273,7 +420,12 @@ local function hide()
         window:destroy()
         window = nil
     end
+    if confirmBox then
+        confirmBox:destroy()
+        confirmBox = nil
+    end
     selected = nil
+    sellItems = {}
 end
 
 function close()
@@ -320,6 +472,7 @@ end
 
 local function requestShop(creature)
     npcName = creature:getName()
+    npcId = creature:getId()
     local protocol = g_game.getProtocolGame()
     if protocol then
         protocol:sendExtendedOpcode(OPCODE, 'open|' .. creature:getId())
@@ -371,6 +524,8 @@ local function onShopMessage(protocol, opcode, data)
     -- el NPC no vende nada: hablarle como siempre
     if data and data.talk then
         g_game.talk('hi')
+    elseif data and data.sell then
+        onSellList(data.sell)
     end
 end
 
