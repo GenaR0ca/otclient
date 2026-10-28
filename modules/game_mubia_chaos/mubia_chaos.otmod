@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_chaos
+  description: Mubia Online - Chaos Machine del Chaos Goblin (como en MU Online)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_chaos ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface

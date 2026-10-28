@@ -1,0 +1,83 @@
+MubiaPartyPanel < UIWidget
+  id: mubiaPartyPanel
+  width: 150
+  height: 20
+  anchors.top: parent.top
+  anchors.right: parent.right
+  margin-top: 6
+  margin-right: 6
+  padding: 4
+  background-color: #00000099
+  border-width: 1
+  border-color: #6b5a3a
+  phantom: true
+  focusable: false
+
+  Label
+    id: title
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 12
+    font: verdana-11px-rounded
+    color: #e8c773
+    text-align: center
+    phantom: true
+
+MubiaPartyRow < UIWidget
+  height: 26
+  anchors.left: parent.left
+  anchors.right: parent.right
+  margin-top: 3
+  phantom: true
+
+  Label
+    id: name
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: level.left
+    height: 12
+    font: verdana-11px-rounded
+    color: #ffffff
+    text-auto-resize: false
+    phantom: true
+
+  Label
+    id: level
+    anchors.top: parent.top
+    anchors.right: parent.right
+    width: 44
+    height: 12
+    font: verdana-11px-rounded
+    color: #c0c0c0
+    text-align: right
+    phantom: true
+
+  UIWidget
+    id: bar
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    height: 11
+    background-color: #2a0000
+    border-width: 1
+    border-color: #000000
+    phantom: true
+
+    UIWidget
+      id: fill
+      anchors.left: parent.left
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
+      margin: 1
+      width: 0
+      background-color: #c81e1e
+      phantom: true
+
+    Label
+      id: hp
+      anchors.fill: parent
+      font: verdana-11px-rounded
+      color: #ffffff
+      text-align: center
+      phantom: true

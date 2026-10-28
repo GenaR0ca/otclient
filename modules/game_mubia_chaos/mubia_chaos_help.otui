@@ -1,0 +1,23 @@
+MainWindow
+  id: mubiaChaosHelpWindow
+  size: 460 330
+  !text: tr('Recetas de la Chaos Machine')
+  @onEscape: modules.game_mubia_chaos.toggleHelp()
+
+  Label
+    id: helpLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.bottom: closeButton.top
+    margin-bottom: 6
+    text-wrap: true
+    text-align: topLeft
+
+  Button
+    id: closeButton
+    !text: tr('Cerrar')
+    width: 60
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_chaos.toggleHelp()

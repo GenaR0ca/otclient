@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_buffs
+  description: Mubia Online - recuadro con los buffs activos y el tiempo que les queda (Elf Soldier)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_buffs ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface

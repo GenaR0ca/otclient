@@ -1,0 +1,154 @@
+SebinaBox < Panel
+  border-width: 1
+  border-color: #5a3a1a
+  background-color: #1a0e06cc
+  padding: 8
+
+SebinaTitle < Label
+  color: #f0c040
+  font: verdana-11px-rounded
+  text-auto-resize: true
+
+SebinaText < Label
+  color: #e0e0e0
+  text-wrap: true
+  text-auto-resize: true
+
+SebinaReward < Label
+  color: #c8f0ff
+  text-wrap: true
+  text-auto-resize: true
+
+MainWindow
+  id: mubiaSebinaWindow
+  width: 380
+  height: 470
+  !text: tr('Sebina the Priest')
+  @onEscape: modules.game_mubia_sebina.hide()
+
+  Label
+    id: stepLabel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    color: #f0c040
+    font: verdana-11px-rounded
+    text-auto-resize: true
+
+  Label
+    id: evolutionLabel
+    anchors.top: parent.top
+    anchors.right: parent.right
+    color: #a0d0ff
+    text-auto-resize: true
+
+  SebinaBox
+    id: talkBox
+    anchors.top: stepLabel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 6
+    height: 80
+
+    SebinaText
+      id: talkText
+      anchors.top: parent.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+  SebinaBox
+    id: itemBox
+    anchors.top: talkBox.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    height: 120
+
+    SebinaTitle
+      id: itemTitle
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    Panel
+      id: itemFrame
+      anchors.top: itemTitle.bottom
+      anchors.left: parent.left
+      margin-top: 6
+      size: 72 72
+      border-width: 2
+      border-color: #c08040
+      background-color: #0e0804
+
+      Item
+        id: questItem
+        anchors.centerIn: parent
+        size: 64 64
+        virtual: true
+        phantom: true
+
+    Label
+      id: itemName
+      anchors.top: itemFrame.top
+      anchors.left: itemFrame.right
+      anchors.right: parent.right
+      margin-left: 10
+      color: #ffffff
+      font: verdana-11px-rounded
+      text-auto-resize: true
+
+    Label
+      id: itemStatus
+      anchors.top: itemName.bottom
+      anchors.left: itemName.left
+      anchors.right: parent.right
+      margin-top: 4
+      text-auto-resize: true
+
+    SebinaText
+      id: itemWhere
+      anchors.top: itemStatus.bottom
+      anchors.left: itemName.left
+      anchors.right: parent.right
+      margin-top: 6
+      color: #c0a080
+
+  SebinaBox
+    id: rewardBox
+    anchors.top: itemBox.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    height: 100
+
+    SebinaTitle
+      id: rewardTitle
+      anchors.top: parent.top
+      anchors.left: parent.left
+
+    Panel
+      id: rewardList
+      anchors.top: rewardTitle.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      margin-top: 4
+      layout:
+        type: verticalBox
+        spacing: 3
+        fit-children: true
+
+  Button
+    id: actionButton
+    width: 130
+    height: 26
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    font: verdana-11px-rounded
+    @onClick: modules.game_mubia_sebina.doAction()
+
+  Button
+    id: closeButton
+    !text: tr('Cerrar')
+    width: 80
+    height: 26
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_sebina.hide()

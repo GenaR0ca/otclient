@@ -162,6 +162,23 @@ function UIItem:onHoverChange(hovered)
     end
 end
 
+-- Ids de los items de MU que se equipan (alas, mascotas y sets/armas/escudos)
+local MUBIA_EQUIPMENT_RANGES = { { 60401, 60499 }, { 60501, 60599 }, { 61001, 63999 } }
+
+local function isMubiaEquipment(item)
+    local position = item:getPosition()
+    if not position or position.x ~= 65535 then
+        return false -- solo items que llevas encima (equipados o en el inventario)
+    end
+    local id = item:getId()
+    for _, range in ipairs(MUBIA_EQUIPMENT_RANGES) do
+        if id >= range[1] and id <= range[2] then
+            return true
+        end
+    end
+    return false
+end
+
 function UIItem:onMouseRelease(mousePosition, mouseButton)
     if self.cancelNextRelease then
         self.cancelNextRelease = false
@@ -176,6 +193,13 @@ function UIItem:onMouseRelease(mousePosition, mouseButton)
     local item = self:getItem()
     if not item or not self:containsPoint(mousePosition) then
         return false
+    end
+
+    -- Mubia: clic derecho en un set, arma, escudo, alas o mascota de MU que tienes encima lo equipa o lo saca
+    if mouseButton == MouseRightButton and g_keyboard.getModifiers() == KeyboardNoModifier and
+        not g_mouse.isPressed(MouseLeftButton) and isMubiaEquipment(item) then
+        g_game.use(item)
+        return true
     end
 
     if modules.client_options.getOption('classicControl') and not g_platform.isMobile() and

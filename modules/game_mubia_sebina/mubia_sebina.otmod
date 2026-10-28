@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_sebina
+  description: Mubia Online - ventana de Sebina the Priest (mision de la segunda evolucion), como en MU
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_sebina ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface

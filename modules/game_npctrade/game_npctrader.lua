@@ -26,6 +26,10 @@ function controllerNpcTrader:onGameStart()
             onNpcChatWindow(data)
         end,
         onOpenNpcTrade = function(...)
+            -- Mubia: la tienda la muestra game_mubia_tienda (grilla estilo MU)
+            if modules.game_mubia_tienda then
+                return
+            end
             self:startEquippedImbuementsTracking()
             if self:isLegacyMode() then
                 onOpenNpcTrade(...)
@@ -34,6 +38,9 @@ function controllerNpcTrader:onGameStart()
             end
         end,
         onPlayerGoods = function(money, items)
+            if modules.game_mubia_tienda then
+                return
+            end
             if self:isLegacyMode() then
                 onPlayerGoods(money, items)
             else

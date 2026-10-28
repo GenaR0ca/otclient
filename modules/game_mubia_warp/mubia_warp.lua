@@ -34,7 +34,8 @@ local function update(data)
             toggle()
         end
     end
-    window:setHeight(WINDOW_BASE_HEIGHT + #panel:getChildren() * 28)
+    -- dos columnas de botones
+    window:setHeight(WINDOW_BASE_HEIGHT + math.ceil(#panel:getChildren() / 2) * 28)
 end
 
 local function onWarp(protocol, opcode, data)

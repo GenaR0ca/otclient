@@ -14,13 +14,35 @@ local function healthManaEvent()
         (healthManaController.ui.mana.total:getWidth() * player:getMana()) / player:getMaxMana())))
 end
 
+-- Mubia: barras de SD y AG (el servidor las manda por el opcode 83)
+local SDAG_OPCODE = 84 -- el 83 es de la Chaos Machine
+
+local function setBar(row, value, maxValue)
+    row.text:setText(value)
+    local width = 12
+    if maxValue > 0 then
+        width = math.max(12, math.ceil(row.total:getWidth() * value / maxValue))
+    end
+    row.current:setWidth(width)
+end
+
+local function onSDAG(protocol, opcode, data)
+    if type(data) ~= 'table' or not healthManaController.ui then
+        return
+    end
+    setBar(healthManaController.ui.sd, tonumber(data.sd) or 0, tonumber(data.maxSd) or 0)
+    setBar(healthManaController.ui.ag, tonumber(data.ag) or 0, tonumber(data.maxAg) or 0)
+end
+
 healthManaController = Controller:new()
 healthManaController:setUI('healthinfo', modules.game_interface.getMainRightPanel())
 
 function healthManaController:onInit()
+    ProtocolGame.registerExtendedJSONOpcode(SDAG_OPCODE, onSDAG)
 end
 
 function healthManaController:onTerminate()
+    ProtocolGame.unregisterExtendedJSONOpcode(SDAG_OPCODE)
     if iconTopMenu then
         iconTopMenu:destroy()
         iconTopMenu = nil

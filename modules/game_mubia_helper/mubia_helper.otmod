@@ -1,0 +1,10 @@
+Module
+  name: game_mubia_helper
+  description: Mubia Online - MU Helper (caza automatica: ataca, usa habilidades, recoge items y se cura)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_helper ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface

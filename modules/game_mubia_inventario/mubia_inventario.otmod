@@ -1,0 +1,11 @@
+Module
+  name: game_mubia_inventario
+  description: Mubia Online - inventario de 40 lugares (tecla I de MU)
+  author: Mubia Online
+  sandboxed: true
+  scripts: [ mubia_inventario ]
+  @onLoad: init()
+  @onUnload: terminate()
+  dependencies:
+    - game_interface
+    - game_containers

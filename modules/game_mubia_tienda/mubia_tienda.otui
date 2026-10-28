@@ -1,0 +1,194 @@
+ShopSlot < Item
+  size: 34 34
+  virtual: true
+  phantom: false
+  draggable: false
+  border-width: 1
+  border-color: #5a3a1a
+  background-color: #1a0e0688
+
+  $hover:
+    border-color: #c08040
+
+  $checked:
+    border-color: #f0c040
+    background-color: #4a3010aa
+
+ShopEmpty < UIWidget
+  size: 34 34
+  phantom: true
+
+ShopTab < Button
+  width: 80
+  height: 20
+  $checked:
+    color: #f0c040
+
+MainWindow
+  id: mubiaShopWindow
+  size: 336 522
+  !text: tr('Tienda')
+  @onEscape: modules.game_mubia_tienda.close()
+
+  ShopTab
+    id: buyTab
+    !text: tr('Comprar')
+    anchors.top: parent.top
+    anchors.left: parent.left
+    @onClick: modules.game_mubia_tienda.setMode('buy')
+
+  ShopTab
+    id: sellTab
+    !text: tr('Vender')
+    anchors.top: parent.top
+    anchors.left: prev.right
+    margin-left: 4
+    @onClick: modules.game_mubia_tienda.setMode('sell')
+
+  Label
+    id: countLabel
+    anchors.top: parent.top
+    anchors.right: parent.right
+    anchors.left: prev.right
+    margin-top: 4
+    text-align: right
+    color: #a08060
+
+  Label
+    id: searchText
+    !text: tr('Buscar:')
+    anchors.top: buyTab.bottom
+    anchors.left: parent.left
+    margin-top: 9
+    width: 46
+    color: #c0c0c0
+
+  TextEdit
+    id: searchEdit
+    anchors.top: buyTab.bottom
+    anchors.left: prev.right
+    anchors.right: parent.right
+    margin-top: 6
+    max-length: 30
+    placeholder: nombre del item
+
+  ScrollablePanel
+    id: itemsPanel
+    anchors.top: searchEdit.bottom
+    anchors.left: parent.left
+    margin-top: 6
+    size: 290 290
+    vertical-scrollbar: itemsScroll
+    border-width: 1
+    border-color: #3a2410
+    background-color: #0e0804cc
+    padding: 2
+    layout:
+      type: grid
+      cell-size: 34 34
+      cell-spacing: 2
+      num-columns: 8
+      flow: true
+
+  VerticalScrollBar
+    id: itemsScroll
+    anchors.top: itemsPanel.top
+    anchors.bottom: itemsPanel.bottom
+    anchors.left: itemsPanel.right
+    step: 36
+    pixels-scroll: true
+
+  Label
+    id: emptyLabel
+    anchors.centerIn: itemsPanel
+    width: 260
+    text-wrap: true
+    text-auto-resize: true
+    text-align: center
+    color: #a08060
+    phantom: true
+
+  Panel
+    id: infoPanel
+    anchors.top: itemsPanel.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 8
+    height: 40
+
+    Item
+      id: selectedItem
+      size: 34 34
+      virtual: true
+      anchors.left: parent.left
+      anchors.verticalCenter: parent.verticalCenter
+      border-width: 1
+      border-color: #f0c040
+
+    Label
+      id: nameLabel
+      anchors.left: prev.right
+      anchors.right: parent.right
+      anchors.top: prev.top
+      margin-left: 6
+      color: #ffffff
+
+    Label
+      id: priceLabel
+      anchors.left: nameLabel.left
+      anchors.right: parent.right
+      anchors.top: nameLabel.bottom
+      margin-top: 4
+      color: #f0c040
+
+  Label
+    id: amountText
+    !text: tr('Cantidad:')
+    anchors.left: parent.left
+    anchors.top: infoPanel.bottom
+    margin-top: 9
+    width: 58
+    color: #c0c0c0
+
+  TextEdit
+    id: amount
+    anchors.left: prev.right
+    anchors.top: infoPanel.bottom
+    margin-top: 6
+    width: 50
+    text: 1
+    max-length: 5
+
+  Label
+    id: zenLabel
+    anchors.left: prev.right
+    anchors.right: parent.right
+    anchors.top: infoPanel.bottom
+    margin-top: 9
+    text-align: right
+    color: #f0c040
+
+  Label
+    id: hintLabel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: tradeButton.top
+    margin-bottom: 6
+    text-align: center
+    color: #808080
+
+  Button
+    id: tradeButton
+    !text: tr('Comprar')
+    width: 90
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_tienda.trade()
+
+  Button
+    id: closeButton
+    !text: tr('Cerrar')
+    width: 70
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: modules.game_mubia_tienda.close()
