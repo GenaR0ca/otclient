@@ -27,6 +27,10 @@ VocationsServer = {
     EliteKnight = 8,
     Monk = 9,
     ExaltedMonk = 10,
+    MagicGladiator = 11,
+    DarkLord = 12,
+    Summoner = 13,
+    BloodySummoner = 14,
 }
 
 VocationsClient = {
@@ -36,6 +40,10 @@ VocationsClient = {
     Sorcerer = 3,
     Druid = 4,
     Monk = 5,
+    MagicGladiator = 6,
+    DarkLord = 7,
+    Summoner = 8,
+    BloodySummoner = 9,
 
     EliteKnight = 11,
     RoyalPaladin = 12,

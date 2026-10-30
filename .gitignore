@@ -334,3 +334,6 @@ android/build/
 luajit-src/
 CMakeUserPresets.json
 **/.canary-shared-cache/
+
+# Mubia
+graphify-out/

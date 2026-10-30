@@ -478,6 +478,12 @@ function translateVocation(id)
 		return 6 -- ed
   elseif id == 5 or id == 15 then
     return 9 -- em
+	elseif id == 6 then
+		return 11 -- mg
+	elseif id == 7 then
+		return 12 -- dl
+	elseif id == 8 or id == 9 then
+		return 14 -- bloody summoner
 	end
   return 0
 end

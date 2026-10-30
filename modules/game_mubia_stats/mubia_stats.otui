@@ -74,6 +74,9 @@ MainWindow
   StatRow
     id: eneRow
 
+  StatRow
+    id: cmdRow
+
   StatLabel
     id: damageLabel
     margin-top: 10
