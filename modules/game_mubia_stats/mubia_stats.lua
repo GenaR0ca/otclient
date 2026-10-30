@@ -5,7 +5,10 @@ local STATS = {
     { id = 'agi', name = 'Agility' },
     { id = 'vit', name = 'Vitality' },
     { id = 'ene', name = 'Energy' },
+    { id = 'cmd', name = 'Command' },
 }
+local WINDOW_HEIGHT = 350
+local COMMAND_ROW_HEIGHT = 26
 
 local window = nil
 local button = nil
@@ -17,11 +20,23 @@ local function request(text)
     end
 end
 
+-- La fila de Command solo ocupa lugar en la clase que la usa (Dark Lord)
+local function showCommandRow(show)
+    local row = window:getChildById('cmdRow')
+    row:setHeight(show and 22 or 0)
+    row:setMarginTop(show and 4 or 0)
+    for _, child in ipairs(row:getChildren()) do
+        child:setVisible(show)
+    end
+    window:setHeight(WINDOW_HEIGHT + (show and COMMAND_ROW_HEIGHT or 0))
+end
+
 local function update(data)
     if not window or type(data) ~= 'table' or data.action ~= 'stats' then
         return
     end
 
+    showCommandRow(data.cmd ~= nil)
     window:getChildById('classLabel'):setText(data.class or '')
     window:getChildById('levelLabel'):setText(string.format('Nivel %d   Resets %d', data.level or 0, data.resets or 0))
     window:getChildById('pointsLabel'):setText(string.format('Puntos libres: %d', data.points or 0))
@@ -79,6 +94,7 @@ end
 function init()
     window = g_ui.displayUI('mubia_stats')
     window:hide()
+    showCommandRow(false)
 
     for _, stat in ipairs(STATS) do
         local row = window:getChildById(stat.id .. 'Row')
