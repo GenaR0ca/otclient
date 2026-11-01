@@ -755,7 +755,22 @@ local function setupOther(panel)
     end
 end
 
+-- Si el jugador camina con el teclado (WASD, flechas o joystick) el Helper se apaga, como en MU.
+-- El Helper camina con autoWalk y el servidor persigue al monstruo, así que esto solo lo dispara el jugador.
+local originalWalk = nil
+
+local function walkHook(...)
+    if helperOn then
+        send('stop')
+        setHelperOn(false)
+        modules.game_textmessage.displayStatusMessage('Mubia Helper apagado: te moviste con el teclado.')
+    end
+    return originalWalk(...)
+end
+
 function init()
+    originalWalk = g_game.walk
+    g_game.walk = walkHook
     window = g_ui.displayUI('mubia_helper')
     window:hide()
     window:getChildById('saveButton'):setText('Guardar')
@@ -800,6 +815,9 @@ function init()
 end
 
 function terminate()
+    if originalWalk and g_game.walk == walkHook then
+        g_game.walk = originalWalk
+    end
     disconnect(g_game, { onGameStart = onGameStart, onGameEnd = onGameEnd })
     setHelperOn(false)
     closePicker()
