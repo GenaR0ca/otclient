@@ -112,6 +112,38 @@ end
 
 -- Sets de MU: cada pieza va en su fila (casco, armadura, pantalón, guantes, botas)
 local COLUMNS = 8
+
+-- Mubia: tamaño de la tienda (barra de 1% a 100%). Todo escala junto: casillas, items y ventana.
+local DEFAULT_SCALE = 21 -- 21% = el tamaño de siempre (casillas de 34)
+local VISIBLE_ROWS = 8
+
+local function cellSizeFor(scale)
+    return 24 + math.floor((scale or DEFAULT_SCALE) * 0.48 + 0.5) -- 1% = 24 px, 100% = 72 px
+end
+
+function applyScale(scale)
+    if not window then
+        return
+    end
+    scale = math.max(1, math.min(100, math.floor(tonumber(scale) or DEFAULT_SCALE)))
+    g_settings.set('mubia-tienda-escala', scale)
+    window:getChildById('scaleValue'):setText(scale .. '%')
+
+    local cell = cellSizeFor(scale)
+    local panel = window:getChildById('itemsPanel')
+    local layout = panel:getLayout()
+    if layout and layout.setCellSize then
+        layout:setCellSize({ width = cell, height = cell })
+    end
+    local grid = COLUMNS * (cell + 2) + 2
+    -- ancho: grilla + barra de scroll + bordes de la ventana; alto: filas visibles + el resto de la ventana
+    window:setSize({ width = math.max(336, grid + 46), height = VISIBLE_ROWS * (cell + 2) + 2 + 258 + math.max(0, cell + 6 - 40) })
+    local selectedItem = window:recursiveGetChildById('selectedItem')
+    if selectedItem then
+        selectedItem:setSize({ width = cell, height = cell })
+        window:getChildById('infoPanel'):setHeight(math.max(40, cell + 6))
+    end
+end
 local SET_PIECES = { helm = 1, armor = 2, pants = 3, gloves = 4, boots = 5 }
 
 -- "vine helm (luck)" -> "vine", 1
@@ -343,10 +375,12 @@ end
 local function show()
     if not window then
         window = g_ui.displayUI('mubia_tienda')
-        local savedW, savedH = (g_settings.getString('mubia-tienda-size') or ''):match('^(%d+)x(%d+)$')
-        if savedW then
-            window:setSize({ width = math.max(336, tonumber(savedW)), height = math.max(480, tonumber(savedH)) })
+        local scaleBar = window:getChildById('scaleBar')
+        scaleBar.onValueChange = function(widget, value)
+            applyScale(value)
         end
+        scaleBar:setValue(g_settings.getNumber('mubia-tienda-escala', DEFAULT_SCALE))
+        applyScale(scaleBar:getValue())
         local panel = window:getChildById('itemsPanel')
         panel.onDrop = onDropItem
         window.onDrop = onDropItem
@@ -421,8 +455,6 @@ local function hide()
         walkEvent = nil
     end
     if window then
-        -- Mubia: recordar el tamaño que eligió el jugador
-        g_settings.set('mubia-tienda-size', window:getWidth() .. 'x' .. window:getHeight())
         window:destroy()
         window = nil
     end

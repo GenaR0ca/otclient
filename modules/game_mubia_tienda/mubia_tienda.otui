@@ -26,28 +26,56 @@ ShopTab < Button
 
 MainWindow
   id: mubiaShopWindow
-  size: 470 640
+  size: 336 548
   !text: tr('Tienda')
   @onEscape: modules.game_mubia_tienda.close()
+
+  // Mubia: barra para agrandar o achicar toda la tienda (1% a 100%)
+  Label
+    id: scaleText
+    !text: tr('Tamano:')
+    anchors.top: parent.top
+    anchors.left: parent.left
+    width: 50
+    color: #c0c0c0
+
+  HorizontalScrollBar
+    id: scaleBar
+    anchors.left: prev.right
+    anchors.top: parent.top
+    width: 140
+    minimum: 1
+    maximum: 100
+    step: 1
+    focusable: false
+
+  Label
+    id: scaleValue
+    anchors.left: prev.right
+    anchors.top: parent.top
+    margin-left: 6
+    width: 40
+    color: #f0c040
 
   ShopTab
     id: buyTab
     !text: tr('Comprar')
-    anchors.top: parent.top
+    anchors.top: scaleText.bottom
     anchors.left: parent.left
+    margin-top: 8
     @onClick: modules.game_mubia_tienda.setMode('buy')
 
   ShopTab
     id: sellTab
     !text: tr('Vender')
-    anchors.top: parent.top
+    anchors.top: buyTab.top
     anchors.left: prev.right
     margin-left: 4
     @onClick: modules.game_mubia_tienda.setMode('sell')
 
   Label
     id: countLabel
-    anchors.top: parent.top
+    anchors.top: buyTab.top
     anchors.right: parent.right
     anchors.left: prev.right
     margin-top: 4
@@ -90,7 +118,6 @@ MainWindow
       cell-size: 34 34
       cell-spacing: 2
       num-columns: 8
-      flow: true
 
   VerticalScrollBar
     id: itemsScroll
@@ -195,23 +222,3 @@ MainWindow
     anchors.bottom: parent.bottom
     @onClick: modules.game_mubia_tienda.close()
 
-  // Mubia: se puede agrandar o achicar arrastrando el borde derecho o el de abajo
-  ResizeBorder
-    id: rightResizeBorder
-    anchors.right: parent.right
-    anchors.top: parent.top
-    anchors.bottom: parent.bottom
-    width: 4
-    margin-right: -14
-    minimum: 336
-    maximum: 1400
-
-  ResizeBorder
-    id: bottomResizeBorder
-    anchors.bottom: parent.bottom
-    anchors.left: parent.left
-    anchors.right: parent.right
-    height: 4
-    margin-bottom: -14
-    minimum: 480
-    maximum: 1200
