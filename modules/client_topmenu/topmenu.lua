@@ -32,6 +32,14 @@ local zoomOutButton = nil
 local zoomLevel = 2
 
 local managerAccountsButton = nil
+-- Mubia: botones de arriba a la derecha que no se muestran
+local MUBIA_HIDDEN_TOP_BUTTONS = {
+    terminalButton = true,   -- Terminal (Ctrl+T)
+    debugInfoButton = true,  -- Debug Info
+    otuiEditorButton = true, -- OTUI Editor (Ctrl+Alt+U)
+    soundDebugButton = true  -- Sound Debug (Ctrl+Alt+S)
+}
+
 -- private functions
 local function addButton(id, description, icon, callback, panel, toggle, front)
     local class
@@ -51,6 +59,10 @@ local function addButton(id, description, icon, callback, panel, toggle, front)
         end
     end
     button:setId(id)
+    -- Mubia: botones de desarrollador ocultos (siguen funcionando con su atajo de teclado)
+    if MUBIA_HIDDEN_TOP_BUTTONS[id] then
+        button:setVisible(false)
+    end
     button:setTooltip(description)
     if toggle then
         button:setIcon(resolvepath(icon, 3))
