@@ -26,7 +26,7 @@ ShopTab < Button
 
 MainWindow
   id: mubiaShopWindow
-  size: 336 522
+  size: 470 640
   !text: tr('Tienda')
   @onEscape: modules.game_mubia_tienda.close()
 
@@ -76,8 +76,10 @@ MainWindow
     id: itemsPanel
     anchors.top: searchEdit.bottom
     anchors.left: parent.left
+    anchors.right: itemsScroll.left
+    anchors.bottom: infoPanel.top
     margin-top: 6
-    size: 290 290
+    margin-bottom: 8
     vertical-scrollbar: itemsScroll
     border-width: 1
     border-color: #3a2410
@@ -94,7 +96,7 @@ MainWindow
     id: itemsScroll
     anchors.top: itemsPanel.top
     anchors.bottom: itemsPanel.bottom
-    anchors.left: itemsPanel.right
+    anchors.right: parent.right
     step: 36
     pixels-scroll: true
 
@@ -110,10 +112,10 @@ MainWindow
 
   Panel
     id: infoPanel
-    anchors.top: itemsPanel.bottom
+    anchors.bottom: amountText.top
     anchors.left: parent.left
     anchors.right: parent.right
-    margin-top: 8
+    margin-bottom: 6
     height: 40
 
     Item
@@ -145,16 +147,15 @@ MainWindow
     id: amountText
     !text: tr('Cantidad:')
     anchors.left: parent.left
-    anchors.top: infoPanel.bottom
-    margin-top: 9
+    anchors.bottom: hintLabel.top
+    margin-bottom: 9
     width: 58
     color: #c0c0c0
 
   TextEdit
     id: amount
     anchors.left: prev.right
-    anchors.top: infoPanel.bottom
-    margin-top: 6
+    anchors.verticalCenter: amountText.verticalCenter
     width: 50
     text: 1
     max-length: 5
@@ -163,8 +164,7 @@ MainWindow
     id: zenLabel
     anchors.left: prev.right
     anchors.right: parent.right
-    anchors.top: infoPanel.bottom
-    margin-top: 9
+    anchors.verticalCenter: amountText.verticalCenter
     text-align: right
     color: #f0c040
 
@@ -192,3 +192,24 @@ MainWindow
     anchors.right: parent.right
     anchors.bottom: parent.bottom
     @onClick: modules.game_mubia_tienda.close()
+
+  // Mubia: se puede agrandar o achicar arrastrando el borde derecho o el de abajo
+  ResizeBorder
+    id: rightResizeBorder
+    anchors.right: parent.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    width: 4
+    margin-right: -14
+    minimum: 336
+    maximum: 1400
+
+  ResizeBorder
+    id: bottomResizeBorder
+    anchors.bottom: parent.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 4
+    margin-bottom: -14
+    minimum: 480
+    maximum: 1200

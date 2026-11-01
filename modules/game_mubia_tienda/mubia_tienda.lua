@@ -343,6 +343,10 @@ end
 local function show()
     if not window then
         window = g_ui.displayUI('mubia_tienda')
+        local savedW, savedH = (g_settings.getString('mubia-tienda-size') or ''):match('^(%d+)x(%d+)$')
+        if savedW then
+            window:setSize({ width = math.max(336, tonumber(savedW)), height = math.max(480, tonumber(savedH)) })
+        end
         local panel = window:getChildById('itemsPanel')
         panel.onDrop = onDropItem
         window.onDrop = onDropItem
@@ -417,6 +421,8 @@ local function hide()
         walkEvent = nil
     end
     if window then
+        -- Mubia: recordar el tamaño que eligió el jugador
+        g_settings.set('mubia-tienda-size', window:getWidth() .. 'x' .. window:getHeight())
         window:destroy()
         window = nil
     end
