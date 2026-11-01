@@ -95,14 +95,10 @@ MubiaBigButton < Button
   size: 120 28
   font: verdana-11px-rounded
 
-StaticWindow
+MainWindow
   id: charactersWindow
   !text: tr('Seleccionar personaje')
   size: 940 372
-  anchors.horizontalCenter: parent.horizontalCenter
-  anchors.bottom: parent.bottom
-  margin-bottom: 60
-  draggable: false
   visible: false
   @onEnter: CharacterList.doLogin()
   @onEscape: CharacterList.hide(true)
@@ -174,6 +170,14 @@ StaticWindow
     anchors.bottom: parent.bottom
     margin-left: 10
     @onClick: CharacterList.hide(true)
+
+  MubiaBigButton
+    id: buttonDelete
+    !text: tr('Delete')
+    anchors.right: buttonOk.left
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    @onClick: MubiaCreate.openDelete()
 
   MubiaBigButton
     id: buttonOk

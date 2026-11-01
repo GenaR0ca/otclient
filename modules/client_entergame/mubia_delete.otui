@@ -1,0 +1,43 @@
+// Mubia Online: confirmar borrado de personaje (hay que escribir el nombre exacto)
+MainWindow
+  id: mubiaDeleteWindow
+  !text: tr('Borrar personaje')
+  size: 380 190
+  @onEnter: MubiaCreate.confirmDelete()
+  @onEscape: MubiaCreate.closeDelete()
+
+  Label
+    id: deleteInfo
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    height: 60
+    text-wrap: true
+    text-align: topLeft
+    color: #dfdfdf
+
+  TextEdit
+    id: deleteNameEdit
+    anchors.top: deleteInfo.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 4
+    max-length: 20
+
+  Button
+    id: deleteOkButton
+    !text: tr('Borrar')
+    width: 80
+    anchors.right: deleteCancelButton.left
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    color: #ff8080
+    @onClick: MubiaCreate.confirmDelete()
+
+  Button
+    id: deleteCancelButton
+    !text: tr('Cancelar')
+    width: 80
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: MubiaCreate.closeDelete()

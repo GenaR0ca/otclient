@@ -807,6 +807,10 @@ local function mubiaUpdateSlots(characterCount)
     if createButton then
         createButton:setEnabled(not full)
     end
+    local deleteButton = charactersWindow:getChildById('buttonDelete')
+    if deleteButton then
+        deleteButton:setEnabled(characterCount > 0)
+    end
     local countLabel = charactersWindow:getChildById('mubiaCountLabel')
     if countLabel then
         countLabel:setText(tr('Personajes: %d / %d', characterCount, MUBIA_MAX_CHARACTERS))
@@ -815,6 +819,11 @@ local function mubiaUpdateSlots(characterCount)
     if scrollBar then
         scrollBar:setVisible(characterCount > MUBIA_MAX_CHARACTERS)
     end
+end
+
+function CharacterList.mubiaSelectedName()
+    local selected = characterList and characterList:getFocusedChild()
+    return selected and selected.characterName or nil
 end
 
 function CharacterList.mubiaCanCreate()

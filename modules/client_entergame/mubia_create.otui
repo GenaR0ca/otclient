@@ -21,7 +21,7 @@ MubiaStatValue < Label
   color: #f0b040
   text-align: right
 
-StaticMainWindow
+MainWindow
   id: mubiaCreateWindow
   !text: tr('Crear personaje')
   size: 720 560
@@ -131,3 +131,4 @@ StaticMainWindow
     anchors.right: parent.right
     anchors.bottom: parent.bottom
     @onClick: MubiaCreate.close()
+

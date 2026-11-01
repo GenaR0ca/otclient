@@ -143,11 +143,11 @@ function MubiaCreate.submit()
 
     local name = window:getChildById('nameEdit'):getText():gsub('^%s+', ''):gsub('%s+$', '')
     if name:len() < 3 or name:len() > 20 then
-        displayErrorBox(tr('Crear personaje'), tr('El nombre debe tener entre 3 y 20 letras.'))
+        displayErrorBox(tr('Crear personaje'), tr('El nombre debe tener entre 3 y 20 caracteres.'))
         return
     end
-    if not name:match('^[%a ]+$') then
-        displayErrorBox(tr('Crear personaje'), tr('El nombre solo puede tener letras.'))
+    if not name:match('^%a[%w ]*$') then
+        displayErrorBox(tr('Crear personaje'), tr('El nombre solo puede tener letras y numeros, y debe empezar con una letra.'))
         return
     end
 
@@ -189,6 +189,79 @@ function MubiaCreate.submit()
     end)
 end
 
+-- ===== Borrar personaje (boton "Delete") =====
+local deleteWindow
+local deleteTarget
+
+function MubiaCreate.closeDelete()
+    if deleteWindow then
+        deleteWindow:destroy()
+        deleteWindow = nil
+    end
+    deleteTarget = nil
+end
+
+function MubiaCreate.openDelete()
+    local target = CharacterList.mubiaSelectedName and CharacterList.mubiaSelectedName()
+    if not target then
+        displayErrorBox(tr('Borrar personaje'), tr('Primero elegi el personaje que queres borrar.'))
+        return
+    end
+    MubiaCreate.closeDelete()
+    deleteTarget = target
+    deleteWindow = g_ui.displayUI('mubia_delete')
+    deleteWindow:getChildById('deleteInfo'):setText(tr(
+        'Vas a borrar a %s para siempre (con todos sus items).\nPara confirmar, escribi su nombre exacto:', target))
+    deleteWindow:show()
+    deleteWindow:raise()
+    deleteWindow:focus()
+    deleteWindow:getChildById('deleteNameEdit'):focus()
+end
+
+function MubiaCreate.confirmDelete()
+    if not deleteWindow or requestPending or not deleteTarget then
+        return
+    end
+    local typed = deleteWindow:getChildById('deleteNameEdit'):getText()
+    if typed ~= deleteTarget then
+        displayErrorBox(tr('Borrar personaje'), tr('El nombre no coincide. Escribilo exacto, con mayusculas: %s', deleteTarget))
+        return
+    end
+
+    requestPending = true
+    deleteWindow:getChildById('deleteOkButton'):setEnabled(false)
+    HTTP.postJSON(buildLoginUrl(), {
+        type = 'deletecharacter',
+        email = G.account,
+        password = G.password,
+        charactername = typed
+    }, function(data, err)
+        requestPending = false
+        if deleteWindow then
+            deleteWindow:getChildById('deleteOkButton'):setEnabled(true)
+        end
+        if err then
+            displayErrorBox(tr('Borrar personaje'),
+                tr('No se pudo conectar con el login-server.\nRevisa que iniciar-login.bat este abierto.\n\n%s', err))
+            return
+        end
+        if type(data) ~= 'table' then
+            displayErrorBox(tr('Borrar personaje'), tr('Respuesta invalida del login-server.'))
+            return
+        end
+        if data.errorMessage then
+            displayErrorBox(tr('Borrar personaje'), data.errorMessage)
+            return
+        end
+        if data.success then
+            MubiaCreate.closeDelete()
+            CharacterList.hide()
+            EnterGame.tryHttpLogin(G.clientVersion or g_game.getClientVersion(), g_settings.getBoolean('httpLogin', true))
+        end
+    end)
+end
+
 function MubiaCreate.terminate()
     MubiaCreate.close()
+    MubiaCreate.closeDelete()
 end
