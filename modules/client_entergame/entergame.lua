@@ -726,7 +726,7 @@ function EnterGame.loginSuccess(requestId, jsonSession, jsonWorlds, jsonCharacte
     end
 
     local worlds = {}
-    for _, world in ipairs(json.decode(jsonWorlds)) do
+    for _, world in ipairs(json.decode(jsonWorlds) or {}) do
         worlds[world.id] = {
             name = world.name,
             ip = world.externaladdressprotected,
@@ -737,7 +737,8 @@ function EnterGame.loginSuccess(requestId, jsonSession, jsonWorlds, jsonCharacte
     end
 
     local characters = {}
-    for index, character in ipairs(json.decode(jsonCharacters)) do
+    -- Mubia: una cuenta sin personajes llega como null; se muestra la lista vacía para poder crear uno
+    for index, character in ipairs(json.decode(jsonCharacters) or {}) do
         local world = worlds[character.worldid]
         characters[index] = {
             name = character.name,
