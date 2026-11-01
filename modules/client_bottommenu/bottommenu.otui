@@ -41,6 +41,7 @@ Panel
   
   Label
     phantom: true
+    visible: false
     anchors.bottom: parent.bottom
     anchors.horizontalCenter: parent.horizontalCenter
     text-align: center
