@@ -94,9 +94,11 @@ MainWindow
 
   VerticalScrollBar
     id: itemsScroll
-    anchors.top: itemsPanel.top
-    anchors.bottom: itemsPanel.bottom
+    anchors.top: searchEdit.bottom
+    anchors.bottom: infoPanel.top
     anchors.right: parent.right
+    margin-top: 6
+    margin-bottom: 8
     step: 36
     pixels-scroll: true
 
