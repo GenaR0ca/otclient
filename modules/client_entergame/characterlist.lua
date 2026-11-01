@@ -770,6 +770,57 @@ function CharacterList.create(characters, account, otui)
     end
 end
 
+-- Mubia Online: lugares estilo MU (personaje grande, nombre, nivel y clase)
+local MUBIA_MAX_CHARACTERS = 5
+
+local function mubiaDecorateSlot(widget, characterInfo)
+    local creatureDisplay = widget:getChildById('outfitCreatureBox')
+    if creatureDisplay then
+        local creature = widget.cachedOutfitCreature
+        if not creature then
+            creature = Creature.create()
+            widget.cachedOutfitCreature = creature
+        end
+        creature:setOutfit({
+            type = characterInfo.outfitid or 0,
+            head = characterInfo.headcolor or 0,
+            body = characterInfo.torsocolor or 0,
+            legs = characterInfo.legscolor or 0,
+            feet = characterInfo.detailcolor or 0,
+            addons = characterInfo.addonsflags or 0
+        })
+        creature:setDirection(2)
+        creatureDisplay:setCreature(creature)
+        creatureDisplay:setPadding(0)
+    end
+end
+
+local function mubiaUpdateSlots(characterCount)
+    if not charactersWindow or not characterList then
+        return
+    end
+    for i = characterCount + 1, MUBIA_MAX_CHARACTERS do
+        g_ui.createWidget('MubiaEmptySlot', characterList)
+    end
+    local full = characterCount >= MUBIA_MAX_CHARACTERS
+    local createButton = charactersWindow:getChildById('buttonCreate')
+    if createButton then
+        createButton:setEnabled(not full)
+    end
+    local countLabel = charactersWindow:getChildById('mubiaCountLabel')
+    if countLabel then
+        countLabel:setText(tr('Personajes: %d / %d', characterCount, MUBIA_MAX_CHARACTERS))
+    end
+    local scrollBar = charactersWindow:getChildById('characterListScrollBar')
+    if scrollBar then
+        scrollBar:setVisible(characterCount > MUBIA_MAX_CHARACTERS)
+    end
+end
+
+function CharacterList.mubiaCanCreate()
+    return not G.characters or #G.characters < MUBIA_MAX_CHARACTERS
+end
+
 function CharacterList.rebuildCharactersList()
     if not characterList then
         return
@@ -798,9 +849,6 @@ function CharacterList.rebuildCharactersList()
 
     for i, characterInfo in ipairs(characters) do
         local widget = g_ui.createWidget('CharacterWidget', characterList)
-        local rowColor = (i % 2 == 0) and evenRowColor or oddRowColor
-        widget.rowColor = rowColor
-        widget:setBackgroundColor(rowColor)
         widget.characterInfo = characterInfo
         for key, value in pairs(characterInfo) do
             local subWidget = widget:getChildById(key)
@@ -821,9 +869,7 @@ function CharacterList.rebuildCharactersList()
             end
         end
 
-        if showAppearance then
-            CharacterList.updateCharactersAppearance(widget, characterInfo, showOutfits)
-        end
+        mubiaDecorateSlot(widget, characterInfo)
 
         -- these are used by login
         widget.characterName = characterInfo.name
@@ -849,6 +895,8 @@ function CharacterList.rebuildCharactersList()
         end
         widget:updateOnStates()
     end
+
+    mubiaUpdateSlots(#characters)
 
     if focusLabel then
         characterList:focusChild(focusLabel, KeyboardFocusReason)
@@ -970,6 +1018,7 @@ function CharacterList.cancelWait()
 end
 
 function CharacterList.updateCharactersAppearance(widget, characterInfo, showOutfits)
+    do return mubiaDecorateSlot(widget, characterInfo) end -- Mubia: los lugares se dibujan siempre igual
     if not shouldShowAppearance() then
         return
     end

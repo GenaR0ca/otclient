@@ -13,9 +13,11 @@ Module
     dofile 'entergame'
     dofile 'characterlist'
     dofile 'createAccount'
+    dofile 'mubia_create'
     EnterGame.init()
     CharacterList.init()
 
   @onUnload: |
     EnterGame.terminate()
     CharacterList.terminate()
+    MubiaCreate.terminate()

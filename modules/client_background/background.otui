@@ -10,6 +10,18 @@ Panel
   margin-top: 1
   focusable: false
 
+  // Mubia Online: titulo dibujado por el cliente (se ve nitido en cualquier monitor)
+  UIWidget
+    id: mubiaLogo
+    image-source: /images/mubia/logo
+    image-smooth: true
+    size: 600 190
+    anchors.top: parent.top
+    anchors.horizontalCenter: parent.horizontalCenter
+    margin-top: 46
+    phantom: true
+    focusable: false
+
   UILabel
     id: clientVersionLabel
     background-color: #00000099

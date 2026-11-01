@@ -1,0 +1,133 @@
+// Mubia Online: pantalla "Create" para crear un personaje (estilo MU).
+
+MubiaClassButton < Button
+  size: 150 26
+  font: verdana-11px-rounded
+  $on:
+    color: #ffe9a8
+    image-color: #b04040
+  $!on:
+    color: #dfdfdf
+    image-color: #ffffff
+
+MubiaStatName < Label
+  width: 90
+  font: verdana-11px-rounded
+  color: #dfdfdf
+
+MubiaStatValue < Label
+  width: 40
+  font: verdana-11px-rounded
+  color: #f0b040
+  text-align: right
+
+StaticMainWindow
+  id: mubiaCreateWindow
+  !text: tr('Crear personaje')
+  size: 720 560
+  @onEnter: MubiaCreate.submit()
+  @onEscape: MubiaCreate.close()
+
+  UIWidget
+    id: portraitFrame
+    anchors.top: parent.top
+    anchors.left: parent.left
+    size: 330 440
+    background-color: #0b0b10
+    border-width: 2
+    border-color: #6b5530
+
+    UIWidget
+      id: portrait
+      anchors.fill: parent
+      margin: 2
+      image-smooth: true
+      image-fixed-ratio: true
+
+    Label
+      id: portraitMissing
+      anchors.centerIn: parent
+      text-auto-resize: true
+      text-align: center
+      color: #777777
+      !text: tr('(sin imagen)')
+      visible: false
+
+  Label
+    id: className
+    anchors.top: parent.top
+    anchors.left: portraitFrame.right
+    anchors.right: parent.right
+    margin-left: 20
+    height: 26
+    font: verdana-11px-rounded
+    color: #ffe9a8
+    text-align: left
+
+  Panel
+    id: statsPanel
+    anchors.top: className.bottom
+    anchors.left: portraitFrame.right
+    anchors.right: parent.right
+    margin-left: 20
+    margin-top: 6
+    height: 110
+    layout:
+      type: grid
+      cell-size: 130 20
+      cell-spacing: 2
+      num-columns: 1
+
+  Panel
+    id: classButtons
+    anchors.top: statsPanel.bottom
+    anchors.left: portraitFrame.right
+    margin-left: 20
+    margin-top: 10
+    size: 150 230
+    layout:
+      type: verticalBox
+      spacing: 4
+
+  Label
+    id: description
+    anchors.top: portraitFrame.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-top: 10
+    height: 30
+    text-wrap: true
+    text-align: topLeft
+    color: #dfdfdf
+
+  Label
+    id: nameLabel
+    !text: tr('Nombre:')
+    anchors.left: parent.left
+    anchors.bottom: parent.bottom
+    margin-bottom: 6
+    width: 55
+
+  TextEdit
+    id: nameEdit
+    anchors.left: nameLabel.right
+    anchors.bottom: parent.bottom
+    width: 260
+    max-length: 20
+
+  Button
+    id: okButton
+    !text: tr('OK')
+    width: 80
+    anchors.right: cancelButton.left
+    anchors.bottom: parent.bottom
+    margin-right: 10
+    @onClick: MubiaCreate.submit()
+
+  Button
+    id: cancelButton
+    !text: tr('Cancelar')
+    width: 80
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    @onClick: MubiaCreate.close()
